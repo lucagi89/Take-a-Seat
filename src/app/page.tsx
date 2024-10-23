@@ -7,7 +7,7 @@ export default function Home() {
       <p>Don`&apos t feel left out anymore </p>
       <Image
         src="../images/main-foto.avif"
-        alt="restaurant party for take a seat"
+        alt="restaurant party"
         width={500}
         height={500}
       />
