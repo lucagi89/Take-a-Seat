@@ -1,16 +1,17 @@
 import Image from "next/image";
+import styles from "./ui/home.module.css"
 
 export default function Home() {
   return (
-    <>
-      <h1>Take a Seat</h1>
-      <p>Don`&apos t feel left out anymore </p>
+    <div className="main">
+      <h1 className="/images/text-blue-200">Take a Seat</h1>
+      <p>Don`t feel left out anymore </p>
       <Image
-        src="../images/main-foto.avif"
-        alt="restaurant party"
+        src="/images/take-a-seat.jpg"
+        alt="seat"
         width={500}
         height={500}
       />
-    </>
+    </div>
   );
 }
