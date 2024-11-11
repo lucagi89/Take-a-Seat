@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { faker } from '@faker-js/faker';
-import { db } from '../lib/firebase.js';
+import { db } from '../lib/firebase.config.js';
 import { collection, addDoc } from 'firebase/firestore';
 
 
