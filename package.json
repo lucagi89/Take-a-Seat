@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "npm run seed && next dev --turbopack",
+    "dev": "npm run seed && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
