@@ -1,0 +1,48 @@
+
+
+.Navbar{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* box-shadow: 0 -5px 20px rgba(255, 255, 255, 0.7); */
+  width: 100%;
+  position: fixed;
+  padding: 10px 10px;
+  bottom: 0;
+  z-index: 1000;
+  box-sizing: border-box;
+  background-color: rgba(218, 218, 218, 0.5);
+}
+
+.links{
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.links a{
+  margin: 0 10px;
+  text-decoration: none;
+  color: #333;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.imageContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width:50px;
+  height:50px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.image {
+  width: 180%;
+  height: 180%;
+  object-fit: cover;
+  position: relative;
+  left: -2px;
+  top: 1px;
+}

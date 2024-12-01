@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import styles from "./ui/layout.module.css"
 
 export const metadata: Metadata = {
   title: "Take a Seat",
@@ -13,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body className={styles.layout}>
         {children}
       </body>
     </html>

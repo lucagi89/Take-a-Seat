@@ -1,7 +1,7 @@
 
 import  fetchRestaurants from "../../lib/data";
 import Link from "next/link";
-import RestaurantCard from "../ui/RestaurantCard";
+import RestaurantCard from "../components/RestaurantCard";
 
 
 

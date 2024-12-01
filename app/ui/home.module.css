@@ -1,5 +1,13 @@
 .shape {
-  height: 1000;
-  width: 1000;
-  background-color: turquoise;
+  margin: 0 auto;
+  text-align: center;
+  background: url('/images/take-a-seat.jpg');
+  background-size: cover;
+  background-position: -900px 0px;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
