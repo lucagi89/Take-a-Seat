@@ -1,8 +1,8 @@
 'use server';
 import { db } from './firebase.config';
-import { collection, getDocs, getDoc, DocumentData, DocumentSnapshot, doc } from 'firebase/firestore';
+import { collection, getDocs, getDoc, DocumentData, DocumentSnapshot, doc, add, addDoc } from 'firebase/firestore';
 import { User } from './definitions';
-import { z } from 'zod';
+
 
 export default async function fetchRestaurants(): Promise<DocumentData[]> {
 
@@ -29,24 +29,29 @@ export async function getRestaurantData(id: string) {
 }
 
 
-// const UserFormSchema = z.object({
-//   id: z.string(),
-//   first_name: z.string(),
-//   last_name: z.string(),
-//   email: z.string(),
-//   password: z.string(),
-//   confirm_password: z.string(),
-//   phone_number: z.string(),
-//   address: z.string(),
-// });
+export async function createUser(data: User) {
+  const userRef = collection(db, 'users');
 
-// const CreateUser = UserFormSchema.omit({id: true});
+  const newUser = {
+    first_name: data.first_name,
+    last_name: data.last_name,
+    email: data.email,
+    is_host: false,
+    password: data.password,
+    phone: data.phone,
+    address: data.address
+  }
+
+  try{
+    await addDoc(userRef, newUser).then((docRef) => {
+      console.log("Document written with ID: ", docRef.id);
+    });
+  }
+  catch (error) {
+    console.error("Error adding document: ", error);
+  }
 
 
-// export async function addUserData(formData: FormData) {
-//   const data = CreateUser.parse(Object.fromEntries(formData.entries()));
-//   console.log(data);
-//   // const docRef = await addDoc(collection(db, "users"), data);
-//   // console.log("Document written with ID: ", docRef.id);
-//   return data;
-// }
+
+
+}

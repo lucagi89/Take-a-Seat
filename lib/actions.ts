@@ -1,34 +1,41 @@
 'use server';
 import { User } from './definitions';
 import { z } from 'zod';
+import { createUser } from './data';
 
 const UserFormSchema = z.object({
   id: z.string(),
-  firstName: z.string(),
-  lastName: z.string(),
-  email: z.string(),
-  password: z.string(),
-  repeatPassword: z.string(),
+  first_name: z.string(),
+  last_name: z.string(),
+  email: z.string().email(),
+  password: z.string().min(6),
+  repeat_password: z.string(),
   phone: z.string(),
   address: z.string(),
-});
+})
 
-const CreateUser = UserFormSchema.omit({id: true});
+const CreateUser = UserFormSchema.omit({id: true}).refine(
+  (data) => data.password === data.repeat_password,
+  {
+    message: "Passwords must match",
+    path: ["repeat_password"],
+  }
+);
 
 
 export async function addUserData(formData: FormData) {
 
   const formObject = Object.fromEntries(formData.entries());
 
-  const { firstName, lastName, email, password, repeatPassword, phone, address } = CreateUser.parse({
-    firstName: formObject.floating_first_name,
-    lastName: formObject.floating_last_name,
-    email: formObject.floating_email,
-    password: formObject.floating_password,
-    repeatPassword: formObject.repeat_password,
-    phone: formObject.floating_phone,
-    address: formObject.floating_address,
+  const { first_name, last_name, email, password, repeat_password, phone, address } = CreateUser.parse({
+    first_name: formObject.first_name,
+    last_name: formObject.last_name,
+    email: formObject.email,
+    password: formObject.password,
+    repeat_password: formObject.repeat_password,
+    phone: formObject.phone,
+    address: formObject.address,
   });
 
-  console.log(firstName, lastName, email, password, repeatPassword, phone, address);
+  await createUser({ first_name, last_name, email, password, repeat_password, phone, address  });
 }
