@@ -3,7 +3,6 @@ import { db } from './firebase.config';
 import { collection, getDocs, getDoc, DocumentData, DocumentSnapshot, doc, add, addDoc } from 'firebase/firestore';
 import { User } from './definitions';
 
-
 export default async function fetchRestaurants(): Promise<DocumentData[]> {
 
   const collectionRef = collection(db, 'restaurants');

@@ -1,0 +1,36 @@
+{
+  "screenshots": [
+    {
+      "src": "./../images/screenshot.png",
+      "sizes": "3024x1888",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "./../images/narrow-screenshot.png",
+      "sizes": "670x1450",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "name": "Take a Seat",
+  "short_name": "TaS",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "./../images/icon-image.png",
+      "sizes": "750x750",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./../images/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
