@@ -22,7 +22,7 @@
   "icons": [
     {
       "src": "./../images/icon-image.png",
-      "sizes": "750x750",
+      "sizes": "500x500",
       "type": "image/png",
       "purpose": "any maskable"
     },

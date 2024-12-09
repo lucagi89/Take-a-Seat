@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "^9.1.0",
+    "@react-google-maps/api": "^2.20.3",
     "dotenv": "^16.4.5",
     "firebase": "^11.0.1",
     "next": "^15.0.3",
@@ -22,7 +23,7 @@
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@types/react": "^18",
+    "@types/react": "^18.3.14",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.20",
     "eslint": "^8",
