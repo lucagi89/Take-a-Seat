@@ -1,22 +1,71 @@
+'use router';
 import dotenv from 'dotenv';
 dotenv.config();
+
 
 import { faker } from '@faker-js/faker';
 import { db } from '../lib/firebase.config.js';
 import { collection, addDoc } from 'firebase/firestore';
+import geocodeAddress from '../lib/map.js';
+
+import admin from 'firebase-admin';
+
+console.log('Google Maps API Key:', process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY);
+
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.applicationDefault(),
+    databaseURL: 'https://take-a-seat-56e45.firebaseio.com',
+    projectId: 'take-a-seat-56e45', // Add your project ID explicitly
+  });
+}
+
+async function deleteAllData(collectionName) {
+  try {
+    const snapshot = await admin.firestore().collection(collectionName).get();
+    const batch = admin.firestore().batch();
+
+    snapshot.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+
+    await batch.commit();
+    console.log(`All documents in collection '${collectionName}' deleted`);
+    return { success: true };
+  } catch (error) {
+    console.error(`Error deleting ${collectionName}:`, error);
+    return { success: false, error: error.message };
+  }
+}
+
+
+
+
+
 
 
 async function seedRestaurants() {
-
   const restaurantsCollection = collection(db, 'restaurants');
+  console.log('Seeding started...');
 
-  for (let i = 0; i < 10; i++) {
-    const restaurant = {
-      id_owner: faker.number.int(),
-      name: faker.company.name(),
-      city: faker.location.city(),
-      address: faker.location.streetAddress(),
-      phone: faker.phone.number({ style: 'international' }),
+  try {
+    console.log('Calling geocodeAddress...');
+    const geolocation1 = await geocodeAddress('279 willesden lane, London, NW2 5JA');
+    const geolocation2 = await geocodeAddress('10 Whitehall Place, London, SW1A 2BD');
+    const geolocation3 = await geocodeAddress('150 Piccadilly, St. James\'s, London, W1J 9BR');
+    // console.log('Geolocation obtained:', geolocation);
+    console.log('Firebase Admin initialized:', admin.apps.length > 0);
+
+    const restaurants = [
+      {
+      id_owner: '1',
+      name: "Luca's Restaurant",
+      city: "London",
+      address: "279 willesden lane",
+      postcode: "NW2 5JA",
+      geolocation: geolocation1,
+      phone: '020 8452 9898',
       email: faker.internet.email(),
       website: faker.internet.url(),
       google_link: faker.internet.url(),
@@ -41,20 +90,101 @@ async function seedRestaurants() {
       ],
       createdAt: new Date(),
       updatedAt: new Date(),
-    };
-
-    try {
-      await addDoc(restaurantsCollection, restaurant);
-    } catch (error) {
-      console.error('Error adding document:', error);
+    },
+    {
+      id_owner: '1',
+      name: "Corinthia Hotel",
+      city: "London",
+      address: "Whitehall Pl",
+      postcode: "SW1A 2BD",
+      geolocation: geolocation2,
+      phone: '020 8452 9898',
+      email: faker.internet.email(),
+      website: faker.internet.url(),
+      google_link: faker.internet.url(),
+      trip_advisor_link: faker.internet.url(),
+      description: faker.lorem.paragraph(),
+      cuisine_one: faker.lorem.word(),
+      cuisine_two: faker.lorem.word(),
+      cuisine_three: faker.lorem.word(),
+      style: faker.lorem.word(),
+      total_num_of_seats: 100,
+      num_of_taken_seats: 50,
+      first_opening_hour: '11:00',
+      first_closing_hour: '15:00',
+      second_opening_hour: '18:00',
+      second_closing_hour: '22:00',
+      menu: faker.internet.url(),
+      is_available: faker.datatype.boolean(),
+      pictures: [
+        faker.image.url(),
+        faker.image.url(),
+        faker.image.url(),
+      ],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id_owner: '1',
+      name: "The Ritz",
+      city: "London",
+      address: "150 Piccadilly, St. James's",
+      postcode: "W1J 9BR",
+      geolocation: geolocation3,
+      phone: '020 8452 9898',
+      email: faker.internet.email(),
+      website: faker.internet.url(),
+      google_link: faker.internet.url(),
+      trip_advisor_link: faker.internet.url(),
+      description: faker.lorem.paragraph(),
+      cuisine_one: faker.lorem.word(),
+      cuisine_two: faker.lorem.word(),
+      cuisine_three: faker.lorem.word(),
+      style: faker.lorem.word(),
+      total_num_of_seats: 100,
+      num_of_taken_seats: 50,
+      first_opening_hour: '11:00',
+      first_closing_hour: '15:00',
+      second_opening_hour: '18:00',
+      second_closing_hour: '22:00',
+      menu: faker.internet.url(),
+      is_available: faker.datatype.boolean(),
+      pictures: [
+        faker.image.url(),
+        faker.image.url(),
+        faker.image.url(),
+      ],
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }
+  ];
+
+    console.log('delete All Restaurants...');
+    await deleteAllData('restaurants');
+    console.log('All restaurants deleted, adding new restaurant...');
+
+    for (const restaurant of restaurants) {
+      // const restaurantGeolocation = await geocodeAddress(restaurant.address, restaurant.city, restaurant.postcode);
+      // restaurant.geolocation = restaurantGeolocation
+
+      await addDoc(restaurantsCollection, restaurant); // Add restaurant to Firestore
+      console.log(`Added restaurant: ${restaurant.name}`);
+    }
+
+    console.log('Restaurant added successfully!');
+  } catch (error) {
+    console.error('Error during seeding:', error);
+    throw error;
   }
 }
+
+
 
 
 async function seedUsers() {
 
   const usersCollection = collection(db, 'users');
+  const users = [];
 
   for (let i = 0; i < 10; i++) {
     const user = {
@@ -68,28 +198,37 @@ async function seedUsers() {
       updatedAt: new Date(),
     };
 
-    try {
-      await addDoc(usersCollection, user);
-    } catch (error) {
-      console.error('Error adding document:', error);
+    users.push(user);
+  }
+  try {
+    console.log('Delete All Users...');
+    await deleteAllData('users');
+    console.log('All users deleted, adding new users...');
+
+    for (const user of users) {
+      await addDoc(usersCollection, user); // Add user to Firestore
+      console.log(`Added user: ${user.first_name} ${user.last_name}`);
     }
+
+  } catch (error) {
+    console.error('Error adding document:', error);
   }
 }
 
 seedUsers().then(() => {
-  console.log('Seeding completed');
+  console.log('Users Seeding Completed');
   process.exit(0); // Exit the script after completion
 }).catch((error) => {
-  console.error('Seeding failed:', error);
+  console.error('Users Seeding Failed:', error);
   process.exit(1);
 });
 
 
 
 seedRestaurants().then(() => {
-  console.log('Seeding completed');
+  console.log('Restaurants Seeding Completed');
   process.exit(0); // Exit the script after completion
 }).catch((error) => {
-  console.error('Seeding failed:', error);
+  console.error('Restaurants Seeding Failed:', error);
   process.exit(1);
 });

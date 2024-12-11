@@ -1,15 +1,25 @@
 // import { useState } from 'react';
 import styles from "/Users/lucagattamelata/take-a-seat/app/ui/loginform.module.css";
-import { addUserData } from "/Users/lucagattamelata/take-a-seat/lib/actions";
+// import { addUserData } from "/Users/lucagattamelata/take-a-seat/lib/actions";
 // User Form Component
 
 export default function UserForm() {
    // You can optionally use state to manage submission status (success, error, etc.)
   //  const [submissionStatus, setSubmissionStatus] = useState(null);
+  const addUserData = async (formData: FormData) => {
+    // Your form submission logic here
+    console.log(Object.fromEntries(formData.entries()));
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    addUserData(formData);
+  };
 
   return (
 
-<form className={`${styles.form} max-w-md mx-auto`} action={addUserData}>
+<form className={`${styles.form} max-w-md mx-auto`} onSubmit={handleSubmit}>
   <div className="grid md:grid-cols-2 md:gap-6">
     <div className="relative z-0 w-80 mb-5 group">
       <input
