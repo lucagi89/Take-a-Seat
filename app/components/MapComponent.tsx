@@ -1,69 +1,48 @@
 'use client';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+// import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { useState, useEffect } from 'react';
 import fetchRestaurants from '../../lib/data';
+import { Restaurant } from './../../types/data-types';
 
-const containerStyle = {
-  width: '100%',
-  height: '500px',
-};
 
-const getMarkerIcon = (is_available) => {
-  return is_available
-    ? 'http://maps.google.com/mapfiles/ms/icons/green-dot.png' // Green icon for availability
-    : 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'; // Red icon for unavailability
-};
+import mapboxgl from 'mapbox-gl';
 
-const defaultCenter = {
-  lat: 51.5074,
-  lng: -0.1278,
-};
 
-const ActualMapComponent = () => {
-  const [center, setCenter] = useState(defaultCenter);
+export default function MapComponent() {
   const [restaurants, setRestaurants] = useState<any>([]);
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setCenter({ lat: latitude, lng: longitude }); // Update the center state
-          console.log('Device location:', { latitude, longitude });
-        },
-        (error) => {
-          console.error('Error getting location:', error);
-        }
-      );
-    } else {
-      console.error('Geolocation is not supported by this browser.');
-    }
-  }, []);
+    mapboxgl.accessToken = 'pk.eyJ1IjoibHVrZS1naSIsImEiOiJjbTRraWV4cGEwZG9kMmlzY3hwOXFhdWZoIn0.RvUFk1iiTWdoWBujUM1Owg';
 
-  useEffect(() => {
-     fetchRestaurants().then((data) => {
-      setRestaurants(data);
+
+    fetchRestaurants().then((restaurants) => {
+      setRestaurants(restaurants);
+
+      const map = new mapboxgl.Map({
+        container: 'map', // The ID of the HTML element to contain the map
+        style: 'mapbox://styles/mapbox/streets-v11', // Map style
+        // Initial map center device location
+        center: [-0.09, 51.505],
+        zoom: 13, // Initial zoom level
+      });
+
+      // Add a marker at the center of the map
+      new mapboxgl.Marker()
+        .setLngLat([-0.09, 51.505]) // Marker [lng, lat]
+        .setPopup(new mapboxgl.Popup().setHTML('<h3>Hello, world!</h3>')) // Add popup
+        .addTo(map);
+
+      for(const restaurant of restaurants) {
+        new mapboxgl.Marker()
+          .setLngLat([restaurant.geolocation.longitude, restaurant.geolocation.latitude]) // Marker [lng, lat]
+          .setPopup(new mapboxgl.Popup().setHTML(`<h3>${restaurant.name}</h3>`)) // Add popup
+          .addTo(map);
+      };
     });
+
   }, []);
 
   return (
-    <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''}>
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={center}
-        zoom={10}
-      >
-        {restaurants.map(restaurant => (
-          <Marker
-            key={restaurant.id}
-            position={restaurant.geolocation}
-            icon={getMarkerIcon(restaurant.is_available)} // Assumes your data has a geolocation field { lat, lng }
-            title={restaurant.name}
-          />
-        ))}
-      </GoogleMap>
-    </LoadScript>
+    <div id="map" style={{ width: '100%', height: '500px' }} />
   );
-};
-
-export default ActualMapComponent;
+}

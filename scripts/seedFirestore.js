@@ -2,7 +2,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-
 import { faker } from '@faker-js/faker';
 import { db } from '../lib/firebase.config.js';
 import { collection, addDoc } from 'firebase/firestore';
@@ -57,8 +56,9 @@ async function seedRestaurants() {
     // console.log('Geolocation obtained:', geolocation);
     console.log('Firebase Admin initialized:', admin.apps.length > 0);
 
-    const restaurants = [
+    const restaurants= [
       {
+      id: 1,
       id_owner: '1',
       name: "Luca's Restaurant",
       city: "London",
@@ -92,6 +92,7 @@ async function seedRestaurants() {
       updatedAt: new Date(),
     },
     {
+      id:2,
       id_owner: '1',
       name: "Corinthia Hotel",
       city: "London",
@@ -125,6 +126,7 @@ async function seedRestaurants() {
       updatedAt: new Date(),
     },
     {
+      id:3,
       id_owner: '1',
       name: "The Ritz",
       city: "London",
@@ -188,6 +190,7 @@ async function seedUsers() {
 
   for (let i = 0; i < 10; i++) {
     const user = {
+      id: 1,
       first_name: faker.person.firstName(),
       last_name: faker.person.lastName(),
       email: faker.internet.email(),

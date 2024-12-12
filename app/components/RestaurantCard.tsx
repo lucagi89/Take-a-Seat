@@ -1,19 +1,10 @@
 import Link from 'next/link';
+import { Restaurant } from './../../types/data-types';
 
-type Restaurant = {
-  id: string;
-  name: string;
-  description: string;
-  email: string;
-};
 
-type PartialRestaurant = Partial<Restaurant>
+// type PartialRestaurant = Partial<Restaurant>
 
-export default function RestaurantCard({
-  restaurant,
-}: Readonly<{
-  restaurant: PartialRestaurant;
-}>) {
+export default function RestaurantCard( restaurant: Restaurant) {
 
   return (
     <li key={restaurant.id} className="flex flex-col gap-3 w-4/5 mx-auto my-8">

@@ -2,11 +2,13 @@
 import  fetchRestaurants from "../../lib/data";
 import Link from "next/link";
 import RestaurantCard from "../components/RestaurantCard";
+// import RestaurantFloorplan from "./components/RestaurantFloorplan";
+import { Restaurant } from "./../../types/data-types";
 
 
 
 export default async function Restaurants() {
-  const restaurants = await fetchRestaurants();
+  const restaurants: Restaurant[] = await fetchRestaurants();
 
   return (
     <>
