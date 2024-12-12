@@ -1,7 +1,13 @@
-export type Geolocation = {
-  latitude: number;
-  longitude: number;
+// export type Geolocation = {
+//   latitude: number;
+//   longitude: number;
+// };
+
+type Timestamp = {
+  seconds: number;
+  nanoseconds: number;
 };
+
 
 export type Restaurant = {
   id: string;
@@ -10,7 +16,8 @@ export type Restaurant = {
   city: string;
   address: string;
   postcode: string;
-  geolocation: Geolocation;
+  latitude: number;
+  longitude: number;
   phone: string;
   email: string;
   website: string;
@@ -30,8 +37,8 @@ export type Restaurant = {
   menu: string;
   is_available: boolean;
   pictures: string[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
 };
 
 

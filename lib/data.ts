@@ -1,4 +1,5 @@
 'use server';
+import { create } from 'domain';
 import { db } from './firebase.config';
 import { collection, getDocs, getDoc, DocumentData, DocumentSnapshot, doc, addDoc } from 'firebase/firestore';
 // import { User } from './definitions';
@@ -9,10 +10,21 @@ export default async function fetchRestaurants(): Promise<DocumentData[]> {
   const snapshot = await getDocs(collectionRef);
   const restaurants = snapshot.docs.map(doc => ({
     id: doc.id,
-    ...doc.data()
+    name: doc.data().name,
+    city: doc.data().city,
+    address: doc.data().address,
+    postcode: doc.data().postcode,
+    latitude: doc.data().latitude,
+    longitude: doc.data().longitude,
+    phone: doc.data().phone,
+    email: doc.data().email,
+    isAvailable: doc.data().isAvailable,
   }));
+  console.log(restaurants);
   return restaurants;
 }
+
+// fetchRestaurants();
 
 
 

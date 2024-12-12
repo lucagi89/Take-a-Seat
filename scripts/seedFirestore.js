@@ -64,7 +64,8 @@ async function seedRestaurants() {
       city: "London",
       address: "279 willesden lane",
       postcode: "NW2 5JA",
-      geolocation: geolocation1,
+      latitude: geolocation1.lat,
+      longitude: geolocation1.lng,
       phone: '020 8452 9898',
       email: faker.internet.email(),
       website: faker.internet.url(),
@@ -98,7 +99,8 @@ async function seedRestaurants() {
       city: "London",
       address: "Whitehall Pl",
       postcode: "SW1A 2BD",
-      geolocation: geolocation2,
+      latitude: geolocation2.lat,
+      longitude: geolocation2.lng,
       phone: '020 8452 9898',
       email: faker.internet.email(),
       website: faker.internet.url(),
@@ -132,7 +134,8 @@ async function seedRestaurants() {
       city: "London",
       address: "150 Piccadilly, St. James's",
       postcode: "W1J 9BR",
-      geolocation: geolocation3,
+      latitude: geolocation3.lat,
+      longitude: geolocation3.lng,
       phone: '020 8452 9898',
       email: faker.internet.email(),
       website: faker.internet.url(),
@@ -170,7 +173,7 @@ async function seedRestaurants() {
       // restaurant.geolocation = restaurantGeolocation
 
       await addDoc(restaurantsCollection, restaurant); // Add restaurant to Firestore
-      console.log(`Added restaurant: ${restaurant.name}`);
+
     }
 
     console.log('Restaurant added successfully!');

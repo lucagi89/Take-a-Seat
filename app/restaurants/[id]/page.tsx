@@ -4,7 +4,7 @@ import { getRestaurantData } from "../../../lib/data";
 import RestaurantFloorplan from "./../components/RestaurantFloorplan";
 
 type Props = {
-  params: { id: number };
+  params: { id: string };
 };
 
 export default async function RestaurantPage({ params }: Props) {
@@ -21,4 +21,5 @@ export default async function RestaurantPage({ params }: Props) {
       <Link href="/restaurants">Back to Restaurants</Link>
     </div>
   );
+
 }
