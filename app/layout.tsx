@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import styles from "./ui/layout.module.css"
+import { AuthProvider } from "../contexts/AuthContext"
 
 export const metadata: Metadata = {
   title: "Take a Seat",
@@ -22,7 +23,9 @@ export default function RootLayout({
         />
       </head>
       <body className={styles.layout}>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

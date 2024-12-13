@@ -17,7 +17,7 @@ export default async function RestaurantPage({ params }: Props) {
     <div>
       <h1>{restaurant?.name || "Unknown Restaurant"}</h1>
       <p>{restaurant?.description || "No description available."}</p>
-      <RestaurantFloorplan restaurantId="1" isOwner={true}/>
+      {/* <RestaurantFloorplan restaurantId="1" isOwner={true}/> */}
       <Link href="/restaurants">Back to Restaurants</Link>
     </div>
   );

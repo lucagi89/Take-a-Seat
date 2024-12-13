@@ -1,20 +1,42 @@
 'use client';
 import styles from "/Users/lucagattamelata/take-a-seat/app/ui/loginform.module.css";
+import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function LoginForm() {
+  const { login } = useAuth();
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(null);
+    try {
+      await login(email, password);
+      alert("Login successful!");
+    } catch (error) {
+      alert("Login failed. Please try again.");
+    }
+  };
+
   return (
-    <form className={`${styles.form} max-w-md mx-auto`}>
+    <div>
+    <form className={`${styles.form} max-w-md mx-auto`} onSubmit={handleLogin}>
       <div className="relative z-0 w-80 my-5 group">
         <input
           type="email"
-          name="floating_email"
-          id="floating_email"
+          name="email"
+          id="email"
           className="block py-2.5 px-100 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-white-500 focus:outline-none focus:ring-0 focus:border-white-800 peer"
           placeholder=" "
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
         <label
-          htmlFor="floating_email"
+          htmlFor="email"
           className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] left-[calc(50%-40px)] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-white-600 peer-focus:dark:text-white-800 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
         >
           Email address
@@ -23,14 +45,16 @@ export default function LoginForm() {
       <div className="relative z-0 w-80 mb-5 group">
         <input
           type="password"
-          name="floating_password"
-          id="floating_password"
+          name="password"
+          id="password"
           className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-white-600 peer"
           placeholder=" "
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           required
         />
         <label
-          htmlFor="floating_password"
+          htmlFor="password"
           className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 left-[calc(50%-40px)] top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-white-600 peer-focus:dark:text-white-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
         >
           Password
@@ -62,5 +86,7 @@ export default function LoginForm() {
         Sign in with Google
       </button>
     </form>
+     {error && <p style={{ color: "red" }}>{error}</p>}
+    </div>
   );
   }
