@@ -1,7 +1,7 @@
 'use client';
 import styles from "/Users/lucagattamelata/take-a-seat/app/ui/loginform.module.css";
 import { useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "../../../hooks/useAuth";
 
 export default function LoginForm() {
   const { login } = useAuth();

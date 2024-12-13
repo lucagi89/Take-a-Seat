@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { auth } from "@/lib/firebase";
+import { auth } from "../lib/firebase.config";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -45,12 +45,24 @@ export const useAuth = (): UseAuth => {
 
   // Login function
   const login = async (email: string, password: string): Promise<void> => {
+    if (!email || !password) {
+      throw new Error("Email and password must not be empty.");
+    }
+
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
-    } catch (error) {
-      console.error("Error logging in:", error);
-      throw error; // Re-throw the error for the caller to handle
+    } catch (error: any) {
+      console.error("Error logging in:", error.code);
+      if (error.code === "auth/invalid-email") {
+        throw new Error("Invalid email format.");
+      } else if (error.code === "auth/user-not-found") {
+        throw new Error("No user found with this email.");
+      } else if (error.code === "auth/wrong-password") {
+        throw new Error("Incorrect password.");
+      } else {
+        throw new Error("An error occurred during login.");
+      }
     }
   };
 
