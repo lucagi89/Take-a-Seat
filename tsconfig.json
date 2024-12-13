@@ -23,6 +23,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(auth)/login/page.js", "scripts/seedFirestore.cjs", "types", "lib/map.js"],, "contexts/AuthContext.js"
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(auth)/login/page.js", "scripts/seedFirestore.cjs", "types", "lib/map.js", "contexts/AuthContext.js"],
   "exclude": ["node_modules"]
 }
