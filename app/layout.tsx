@@ -2,6 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 import styles from "./ui/layout.module.css"
 import { AuthProvider } from "../contexts/AuthContext"
+import { Roboto } from "@next/font/google";
+
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["400", "700"], // Specify the weights you need
+});
 
 export const metadata: Metadata = {
   title: "Take a Seat",
@@ -15,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={roboto.className} suppressHydrationWarning>
       <head>
         <link
           href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css"

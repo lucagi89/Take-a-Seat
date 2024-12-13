@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "^9.1.0",
+    "@next/font": "^14.2.15",
     "@react-google-maps/api": "^2.20.3",
     "axios": "^1.7.9",
     "dotenv": "^16.4.5",
