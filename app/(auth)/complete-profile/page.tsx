@@ -1,6 +1,6 @@
-import ProfileForm from '../../components/ProfileForm'
+import ProfileForm from '../../components/forms/ProfileForm'
 
-function CompleteProfilePage() {
+export default function CompleteProfilePage() {
 
   return (
     <div>

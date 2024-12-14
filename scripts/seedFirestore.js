@@ -21,22 +21,31 @@ if (!admin.apps.length) {
 }
 
 async function deleteAllData(collectionName) {
+  const db = admin.firestore(); // Ensure the Admin SDK is initialized
   try {
-    const snapshot = await admin.firestore().collection(collectionName).get();
-    const batch = admin.firestore().batch();
+    const snapshot = await db.collection(collectionName).get();
+    if (snapshot.empty) {
+      console.log(`No documents found in collection '${collectionName}'.`);
+      return { success: true };
+    }
 
-    snapshot.forEach((doc) => {
+    const batch = db.batch();
+    let count = 0;
+
+    snapshot.docs.forEach((doc) => {
       batch.delete(doc.ref);
+      count++;
     });
 
-    await batch.commit();
-    console.log(`All documents in collection '${collectionName}' deleted`);
+    await batch.commit(); // Commit the batch
+    console.log(`Successfully deleted ${count} documents from collection '${collectionName}'.`);
     return { success: true };
   } catch (error) {
-    console.error(`Error deleting ${collectionName}:`, error);
+    console.error(`Error deleting documents from '${collectionName}':`, error);
     return { success: false, error: error.message };
   }
 }
+
 
 
 
@@ -50,6 +59,7 @@ async function seedRestaurants() {
 
   try {
     console.log('Calling geocodeAddress...');
+    await deleteAllData('restaurants');
     const geolocation1 = await geocodeAddress('279 willesden lane, London, NW2 5JA');
     const geolocation2 = await geocodeAddress('10 Whitehall Place, London, SW1A 2BD');
     const geolocation3 = await geocodeAddress('150 Piccadilly, St. James\'s, London, W1J 9BR');
@@ -169,8 +179,6 @@ async function seedRestaurants() {
     console.log('All restaurants deleted, adding new restaurant...');
 
     for (const restaurant of restaurants) {
-      // const restaurantGeolocation = await geocodeAddress(restaurant.address, restaurant.city, restaurant.postcode);
-      // restaurant.geolocation = restaurantGeolocation
 
       await addDoc(restaurantsCollection, restaurant); // Add restaurant to Firestore
 
@@ -186,48 +194,48 @@ async function seedRestaurants() {
 
 
 
-async function seedUsers() {
+// async function seedUsers() {
 
-  const usersCollection = collection(db, 'users');
-  const users = [];
+//   const usersCollection = collection(db, 'users');
+//   const users = [];
 
-  for (let i = 0; i < 10; i++) {
-    const user = {
-      id: 1,
-      first_name: faker.person.firstName(),
-      last_name: faker.person.lastName(),
-      email: faker.internet.email(),
-      phone: faker.phone.number({ style: 'international' }),
-      password: faker.internet.password(),
-      is_host: faker.datatype.boolean(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+//   for (let i = 0; i < 10; i++) {
+//     const user = {
+//       id: 1,
+//       first_name: faker.person.firstName(),
+//       last_name: faker.person.lastName(),
+//       email: faker.internet.email(),
+//       phone: faker.phone.number({ style: 'international' }),
+//       password: faker.internet.password(),
+//       is_host: faker.datatype.boolean(),
+//       createdAt: new Date(),
+//       updatedAt: new Date(),
+//     };
 
-    users.push(user);
-  }
-  try {
-    console.log('Delete All Users...');
-    await deleteAllData('users');
-    console.log('All users deleted, adding new users...');
+//     users.push(user);
+//   }
+//   try {
+//     console.log('Delete All Users...');
+//     await deleteAllData('users');
+//     console.log('All users deleted, adding new users...');
 
-    for (const user of users) {
-      await addDoc(usersCollection, user); // Add user to Firestore
-      console.log(`Added user: ${user.first_name} ${user.last_name}`);
-    }
+//     for (const user of users) {
+//       await addDoc(usersCollection, user); // Add user to Firestore
+//       console.log(`Added user: ${user.first_name} ${user.last_name}`);
+//     }
 
-  } catch (error) {
-    console.error('Error adding document:', error);
-  }
-}
+//   } catch (error) {
+//     console.error('Error adding document:', error);
+//   }
+// }
 
-seedUsers().then(() => {
-  console.log('Users Seeding Completed');
-  process.exit(0); // Exit the script after completion
-}).catch((error) => {
-  console.error('Users Seeding Failed:', error);
-  process.exit(1);
-});
+// seedUsers().then(() => {
+//   console.log('Users Seeding Completed');
+//   process.exit(0); // Exit the script after completion
+// }).catch((error) => {
+//   console.error('Users Seeding Failed:', error);
+//   process.exit(1);
+// });
 
 
 
