@@ -37,6 +37,7 @@ export const useAuth = (): UseAuth => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
+      window.location.href = "/complete-profile";
     } catch (error) {
       console.error("Error signing up:", error);
       throw error; // Re-throw the error for the caller to handle

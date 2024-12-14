@@ -1,52 +1,47 @@
-"use client";
+import { useState } from "react";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { useRouter } from "next/router";
 
-import React, { useState } from "react";
-import { useAuth } from "../../../hooks/useAuth";
-import { useRouter } from "next/navigation";
-
-const SignUpPage: React.FC = () => {
-  const { signUp } = useAuth();
+const SignUp: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const auth = getAuth();
 
-
-  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
     try {
-      await signUp(email, password);
-      router.push("/dashboard");
-      alert("Sign-up successful!");
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      console.log("User created:", userCredential.user);
+      router.push("/complete-profile"); // Redirect to profile completion
     } catch (error) {
-      setError("Sign-up failed. Please try again.");
+      console.error("Error signing up:", (error as Error).message);
     }
   };
 
   return (
-    <div>
-      <h1>Sign Up</h1>
-      <form onSubmit={handleSignUp}>
+    <form onSubmit={handleSignUp}>
+      <label>
+        Email:
         <input
           type="email"
-          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
+      </label>
+      <label>
+        Password:
         <input
           type="password"
-          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit">Sign Up</button>
-      </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-    </div>
+      </label>
+      <button type="submit">Sign Up</button>
+    </form>
   );
 };
 
-export default SignUpPage;
+export default SignUp;
