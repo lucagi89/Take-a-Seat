@@ -37,7 +37,9 @@ export default function SignUp(){
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          autoComplete="current-password"
           required
+
         />
       </label>
       <button type="submit">Sign Up</button>

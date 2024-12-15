@@ -2,12 +2,14 @@
 import styles from "/Users/lucagattamelata/take-a-seat/app/ui/loginform.module.css";
 import { useState } from "react";
 import { useAuth } from "../../../hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const { login } = useAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -15,7 +17,8 @@ export default function LoginForm() {
     setError(null);
     try {
       await login(email, password);
-      alert("Login successful!");
+      // alert("Login successful!");
+      router.push("/");
     } catch (error) {
       alert("Login failed. Please try again.");
     }
@@ -33,6 +36,7 @@ export default function LoginForm() {
           placeholder=" "
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          autoComplete="email"
           required
         />
         <label
@@ -51,6 +55,7 @@ export default function LoginForm() {
           placeholder=" "
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          autoComplete="current-password"
           required
         />
         <label
