@@ -1,48 +1,46 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFirestore } from 'firebase-admin/firestore';
-import { initializeApp, getApps, cert } from 'firebase-admin/app';
-
-if (!getApps().length) {
-  initializeApp({
-    credential: cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    }),
-  });
-}
-
-const db = getFirestore();
+import { db } from '../../../lib/firebase.config'
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const neLat = parseFloat(searchParams.get('neLat') || '0');
-  const neLng = parseFloat(searchParams.get('neLng') || '0');
-  const swLat = parseFloat(searchParams.get('swLat') || '0');
-  const swLng = parseFloat(searchParams.get('swLng') || '0');
+  // Parse query parameters
+  const url = new URL(req.url);
+  const neLat = parseFloat(url.searchParams.get('neLat') || '');
+  const neLng = parseFloat(url.searchParams.get('neLng') || '');
+  const swLat = parseFloat(url.searchParams.get('swLat') || '');
+  const swLng = parseFloat(url.searchParams.get('swLng') || '');
 
-  console.log('Received bounds:', { neLat, neLng, swLat, swLng });
-
-  if (!neLat || !neLng || !swLat || !swLng) {
-    return NextResponse.json({ error: 'Invalid query parameters' }, { status: 400 });
+  // Validate query parameters
+  if (isNaN(neLat) || isNaN(neLng) || isNaN(swLat) || isNaN(swLng)) {
+    return NextResponse.json({ error: 'Missing or invalid query parameters' }, { status: 400 });
   }
 
   try {
-    const snapshot = await db.collection('restaurants')
-      .where('latitude', '>=', swLat)
-      .where('latitude', '<=', neLat)
-      .get();
+    // Reference the "restaurants" collection
+    const restaurantsRef = collection(db, 'restaurants');
 
-    const filteredRestaurants = snapshot.docs
-      .map((doc) => doc.data())
-      .filter(
-        (restaurant) =>
-          restaurant.longitude >= swLng && restaurant.longitude <= neLng
-      );
+    // Query restaurants within bounds
+    const latitudeQuery = query(
+      restaurantsRef,
+      where('latitude', '>=', swLat),
+      where('latitude', '<=', neLat)
+    );
 
-    return NextResponse.json(filteredRestaurants);
+    // Execute the restaurantsRef
+    const snapshot = await getDocs(latitudeQuery);
+
+    // Map the query results
+    const restaurants = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    // Return the results
+    return NextResponse.json(restaurants);
   } catch (error) {
     console.error('Error fetching restaurants:', error);
-    return NextResponse.json({ error: 'Failed to fetch restaurants' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch restaurants' }, { status: 500
+    });
   }
 }
+//
