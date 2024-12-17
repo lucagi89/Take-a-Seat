@@ -384,6 +384,7 @@ export default function MapComponent() {
         enableHighAccuracy: true,
         timeout: 10000,
         maximumAge: 0,
+
       }
     );
   };
@@ -445,3 +446,35 @@ export default function MapComponent() {
 
   return <div ref={mapContainerRef} style={{ width: '100%', height: '100vh' }} />;
 }
+
+
+
+
+
+// async function fetchPreciseLocation() {
+//   try {
+//     const geolocation = new Promise<GeolocationPosition>((resolve, reject) => {
+//       navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true });
+//     });
+
+//     const position = await geolocation;
+//     return {
+//       latitude: position.coords.latitude,
+//       longitude: position.coords.longitude,
+//       accuracy: position.coords.accuracy, // meters
+//     };
+//   } catch (error) {
+//     console.error('Geolocation error, using external service fallback:', error);
+
+//     // Fallback to Google Geolocation API
+//     const response = await fetch('https://www.googleapis.com/geolocation/v1/geolocate?key=YOUR_API_KEY', {
+//       method: 'POST',
+//     });
+//     const data = await response.json();
+//     return {
+//       latitude: data.location.lat,
+//       longitude: data.location.lng,
+//       accuracy: data.accuracy,
+//     };
+//   }
+// }
