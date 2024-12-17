@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '../../../lib/firebase.config'
-import { collection, query, where, getDocs } from 'firebase/firestore';
+// import { db } from '../../../lib/firebase.config'
+import { query, where, getDocs } from 'firebase/firestore';
+import { restaurantsRef } from '../../../lib/firebase.config'
 
 export async function GET(req: NextRequest) {
   // Parse query parameters
@@ -17,7 +18,7 @@ export async function GET(req: NextRequest) {
 
   try {
     // Reference the "restaurants" collection
-    const restaurantsRef = collection(db, 'restaurants');
+    // const restaurantsRef = collection(db, 'restaurants');
 
     // Query restaurants within bounds
     const latitudeQuery = query(

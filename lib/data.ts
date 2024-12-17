@@ -1,8 +1,7 @@
 'use server';
-import { create } from 'domain';
+
 import { db } from './firebase.config';
-import { collection, getDocs, getDoc, DocumentData, DocumentSnapshot, doc, addDoc } from 'firebase/firestore';
-// import { User } from './definitions';
+import { collection, getDocs, getDoc, DocumentData, doc } from 'firebase/firestore';
 
 export default async function fetchRestaurants(): Promise<DocumentData[]> {
 
@@ -20,7 +19,6 @@ export default async function fetchRestaurants(): Promise<DocumentData[]> {
     email: doc.data().email,
     isAvailable: doc.data().isAvailable,
   }));
-  console.log(restaurants);
   return restaurants;
 }
 
@@ -38,31 +36,3 @@ export async function getRestaurantData(id: string): Promise<DocumentData> {
 
   return docSnap.data();
 }
-
-
-// export async function createUser(data: User) {
-//   const userRef = collection(db, 'users');
-
-//   const newUser = {
-//     first_name: data.first_name,
-//     last_name: data.last_name,s
-//     email: data.email,
-//     is_host: false,
-//     password: data.password,
-//     phone: data.phone,
-//     address: data.address
-//   }
-
-//   try{
-//     await addDoc(userRef, newUser).then((docRef) => {
-//       console.log("Document written with ID: ", docRef.id);
-//     });
-//   }
-//   catch (error) {
-//     console.error("Error adding document: ", error);
-//   }
-
-
-
-
-// }
