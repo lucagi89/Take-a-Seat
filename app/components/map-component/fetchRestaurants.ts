@@ -1,6 +1,5 @@
 export const fetchRestaurants = async (bounds: mapboxgl.LngLatBounds) => {
   const { _ne, _sw } = bounds;
-  console.log('Fetching restaurants with bounds:', _ne, _sw); // Log bounds for debugging
 
   try {
     const response = await fetch(

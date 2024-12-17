@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { fetchRestaurants } from './fetchRestaurants'
-import { createMarker } from './marker-utils';
+// import { createMarker } from './marker-utils';
 import PopupComponent from '../PopupComponent';
 import { createRoot } from 'react-dom/client';
+
+import { createPulsingMarker } from './marker-utils';
 
 export default function useMarkers(map: mapboxgl.Map | null) {
   const [restaurants, setRestaurants] = useState([]);
@@ -19,6 +21,7 @@ export default function useMarkers(map: mapboxgl.Map | null) {
       }
     };
 
+
     map.on('load', updateRestaurants);
     map.on('moveend', updateRestaurants);
     map.on('zoomend', updateRestaurants);
@@ -30,8 +33,9 @@ export default function useMarkers(map: mapboxgl.Map | null) {
     };
   }, [map]);
 
+  const pulsingMarker = createPulsingMarker();
+
   useEffect(() => {
-    console.log(map);
     if (!map) return;
 
     document.querySelectorAll('.restaurant-marker').forEach((marker) => marker.remove());

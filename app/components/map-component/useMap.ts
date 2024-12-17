@@ -8,6 +8,7 @@ const useMap = (
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
+
     mapboxgl.accessToken = 'pk.eyJ1IjoibHVrZS1naSIsImEiOiJjbTRraWV4cGEwZG9kMmlzY3hwOXFhdWZoIn0.RvUFk1iiTWdoWBujUM1Owg';
 
     const mapInstance = new mapboxgl.Map({
@@ -21,7 +22,6 @@ const useMap = (
     handleUserLocation(mapInstance);
 
     mapInstance.on('load', () => {
-      console.log('Map loaded:', mapInstance);
     });
 
     return () => {
