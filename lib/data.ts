@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from './firebase.config';
-import { collection, getDocs, getDoc, DocumentData, doc } from 'firebase/firestore';
+// import { collection, getDocs, getDoc, DocumentData, doc } from 'firebase/firestore';
 
 export default async function fetchRestaurants(): Promise<DocumentData[]> {
 
@@ -26,13 +26,31 @@ export default async function fetchRestaurants(): Promise<DocumentData[]> {
 
 
 
-export async function getRestaurantData(id: string): Promise<DocumentData> {
-  const docRef = doc(db, "restaurants", id);
-  const docSnap = await getDoc(docRef);
+import { collection, query, where, getDocs } from 'firebase/firestore';
+// import { firebaseApp } from './firebase';
 
-  if (!docSnap.exists()) {
-    throw new Error(`Restaurant with ID ${id} not found`);
+// const db = getFirestore(firebaseApp);
+
+export async function getRestaurantData(name: string) {
+  try {
+    const decodedName = decodeURIComponent(name); // Decode the URL parameter
+    console.log(`Server Fetching restaurant: ${decodedName}`);
+
+    // Query Firestore for a restaurant with the decoded name
+    const q = query(collection(db, 'restaurants'), where('name', '==', decodedName));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      console.error(`No restaurant found with the name: ${decodedName}`);
+      throw new Error(`Restaurant called ${decodedName} not found`);
+    }
+
+    // Return the first matching document
+    const restaurantData = querySnapshot.docs[0].data();
+    console.log('Server Restaurant Data:', restaurantData);
+    return restaurantData;
+  } catch (error) {
+    console.error('Error fetching restaurant:', error.message);
+    throw error;
   }
-
-  return docSnap.data();
 }

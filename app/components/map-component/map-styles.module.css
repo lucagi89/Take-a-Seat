@@ -1,13 +1,12 @@
+
 .pulsingMarker {
-  width: 20px; /* Adjust the base size of the ball */
+  width: 20px;
   height: 20px;
-  background-color: rgba(0, 150, 255, 0.7); /* Light blue color */
-  border-radius: 50%; /* Makes it a circle */
-  box-shadow: 0 0 15px rgba(0, 150, 255, 0.5); /* Adds a glow effect */
-  animation: pulse 2s infinite ease-in-out; /* Smooth pulsing animation */
+  background-color: rgba(0, 150, 255, 0.7);
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(0, 150, 255, 0.5);
+  animation: pulse 2s infinite ease-in-out;
 }
-
-
 
 @keyframes pulse {
   0% {

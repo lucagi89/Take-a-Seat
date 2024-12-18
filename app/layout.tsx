@@ -3,6 +3,7 @@ import "./globals.css";
 import styles from "./ui/layout.module.css"
 import { AuthProvider } from "../contexts/AuthContext"
 import { Roboto } from "next/font/google";
+import { MapProvider } from './components/map-component/mapContext';
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -30,7 +31,9 @@ export default function RootLayout({
       </head>
       <body className={styles.layout}>
         <AuthProvider>
-          {children}
+          <MapProvider>
+            {children}
+          </MapProvider>
         </AuthProvider>
       </body>
     </html>

@@ -5,7 +5,7 @@ import { fetchRestaurants } from './fetchRestaurants'
 import PopupComponent from '../PopupComponent';
 import { createRoot } from 'react-dom/client';
 
-import { createPulsingMarker } from './marker-utils';
+// import { createPulsingMarker } from './marker-utils';
 
 export default function useMarkers(map: mapboxgl.Map | null) {
   const [restaurants, setRestaurants] = useState([]);
@@ -33,7 +33,6 @@ export default function useMarkers(map: mapboxgl.Map | null) {
     };
   }, [map]);
 
-  const pulsingMarker = createPulsingMarker();
 
   useEffect(() => {
     if (!map) return;
@@ -45,7 +44,7 @@ export default function useMarkers(map: mapboxgl.Map | null) {
 
       const popupElement = document.createElement('div');
       const root = createRoot(popupElement);
-      root.render(<PopupComponent restaurantId={id} restaurantName={name} />);
+      root.render(<PopupComponent restaurantName={name} />);
       const markerColor = is_available ? 'green' : 'red';
 
       new mapboxgl.Marker({color: markerColor})
