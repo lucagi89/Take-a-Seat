@@ -19,7 +19,7 @@ export default function LoginForm() {
       await login(email, password);
       // alert("Login successful!");
       router.push("/");
-    } catch (error) {
+    } catch {
       alert("Login failed. Please try again.");
     }
   };

@@ -40,7 +40,7 @@ export default function useMarkers(map: mapboxgl.Map | null) {
     document.querySelectorAll('.restaurant-marker').forEach((marker) => marker.remove());
 
     restaurants.forEach((restaurant) => {
-      const { longitude, latitude, name, id, is_available } = restaurant;
+      const { longitude, latitude, name, is_available } = restaurant;
 
       const popupElement = document.createElement('div');
       const root = createRoot(popupElement);
