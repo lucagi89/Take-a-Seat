@@ -30,7 +30,7 @@ export default async function RestaurantPage({ params }: { params: Promise<Param
     <div>
       <h1>{restaurant?.name || "Unknown Restaurant"}</h1>
       <p>{restaurant?.description || "No description available."}</p>
-      {/* <RestaurantFloorplan restaurantId="1" isOwner={true}/> */}
+
       <Link href="/">Back to The map</Link>
     </div>
   );
