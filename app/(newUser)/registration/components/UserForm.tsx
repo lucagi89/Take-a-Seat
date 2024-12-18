@@ -1,5 +1,5 @@
 // import { useState } from 'react';
-import styles from "/Users/lucagattamelata/take-a-seat/app/ui/loginform.module.css";
+import styles from "../../../ui/loginform.module.css";
 // import { addUserData } from "/Users/lucagattamelata/take-a-seat/lib/actions";
 // User Form Component
 
