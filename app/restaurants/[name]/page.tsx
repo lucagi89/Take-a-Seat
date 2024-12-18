@@ -4,7 +4,9 @@ import { getRestaurantData } from "../../../lib/data";
 // import RestaurantFloorplan from "./../components/RestaurantFloorplan";
 
 type Props = {
-  params: { name: string };
+  params: {
+    name: string;
+  };
 };
 
 export default async function RestaurantPage({ params }: Props) {
@@ -12,6 +14,10 @@ export default async function RestaurantPage({ params }: Props) {
   console.log("Restaurant ID:", name);
   // Fetch restaurant data based on the ID
   const restaurant = await getRestaurantData(name);
+
+  if (!restaurant) {
+    return <div>Restaurant not found.</div>;
+  }
 
   return (
     <div>
