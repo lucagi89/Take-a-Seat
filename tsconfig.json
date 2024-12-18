@@ -23,6 +23,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(auth)/login/page.js", "scripts/seedFirestore.cjs", "types", "lib/map.js", "contexts/AuthContext.js", "lib/firebase.config.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(auth)/login/page.js", "scripts/seedFirestore.cjs", "types", "lib/geolocation.ts", "contexts/AuthContext.js", "lib/firebase.co, "lib/geolocation.js"nfig.js"],
   "exclude": ["node_modules"]
 }
