@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from './firebase.config';
-// import { collection, getDocs, getDoc, DocumentData, doc } from 'firebase/firestore';
+import { DocumentData } from 'firebase/firestore';
 
 export default async function fetchRestaurants(): Promise<DocumentData[]> {
 

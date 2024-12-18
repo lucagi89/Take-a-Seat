@@ -1,17 +1,24 @@
 // app/restaurants/[id]/page.tsx
 import Link from 'next/link';
 import { getRestaurantData } from "../../../lib/data";
-// import RestaurantFloorplan from "./../components/RestaurantFloorplan";
+import { Metadata } from 'next';
 
-type Props = {
-  params: {
-    name: string;
-  };
+type Params = {
+  name: string;
 };
 
-export default async function RestaurantPage({ params }: Props) {
-  const { name } = params; // Await is NOT needed for params in Server Components
-  console.log("Restaurant ID:", name);
+// Dynamically generate metadata for the restaurant page
+export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
+  const { name } = await params; // Await the params if it's a promise
+  return {
+    title: `Restaurant: ${name}`,
+  };
+}
+
+export default async function RestaurantPage({ params }: { params: Promise<Params> }) {
+  console.log("params received:", params);
+  const { name } = await params; // Await the params to destructure the name property
+  console.log("Restaurant name:", name);
   // Fetch restaurant data based on the ID
   const restaurant = await getRestaurantData(name);
 

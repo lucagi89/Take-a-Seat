@@ -7,6 +7,7 @@ export const fetchRestaurants = async (bounds: mapboxgl.LngLatBounds) => {
     );
 
     const data = await response.json();
+    console.log('Fetched restaurants:', data);
 
     if (!response.ok) throw new Error('Failed to fetch restaurants');
     return data;

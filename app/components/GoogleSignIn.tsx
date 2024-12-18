@@ -1,5 +1,5 @@
 
-import { googleSignIn } from "../../hooks/googleAuth";
+import googleSignIn from "../../hooks/googleAuth";
 
 const GoogleSignInButton = () => {
   return (
