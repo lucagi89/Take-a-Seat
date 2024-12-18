@@ -4,6 +4,9 @@ import styles from "./ui/layout.module.css"
 import { AuthProvider } from "../contexts/AuthContext"
 import { Roboto } from "next/font/google";
 import { MapProvider } from './components/map-component/mapContext';
+// import { Inter } from 'next/font/google';
+
+
 
 const roboto = Roboto({
   subsets: ["latin"],
