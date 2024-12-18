@@ -2,24 +2,17 @@
 
 import { db } from './firebase.config';
 import { DocumentData } from 'firebase/firestore';
+import {Restaurant} from '../types/data-types'
 
-export default async function fetchRestaurants(): Promise<DocumentData[]> {
+export default async function fetchRestaurants(): Promise<Restaurant[]> {
 
   const collectionRef = collection(db, 'restaurants');
   const snapshot = await getDocs(collectionRef);
   const restaurants = snapshot.docs.map(doc => ({
     id: doc.id,
-    name: doc.data().name,
-    city: doc.data().city,
-    address: doc.data().address,
-    postcode: doc.data().postcode,
-    latitude: doc.data().latitude,
-    longitude: doc.data().longitude,
-    phone: doc.data().phone,
-    email: doc.data().email,
-    isAvailable: doc.data().isAvailable,
+    ...doc.data() as DocumentData
   }));
-  return restaurants;
+  return restaurants as Restaurant[];
 }
 
 // fetchRestaurants();
@@ -50,7 +43,11 @@ export async function getRestaurantData(name: string) {
     console.log('Server Restaurant Data:', restaurantData);
     return restaurantData;
   } catch (error) {
-    console.error('Error fetching restaurant:', error.message);
+    if (error instanceof Error) {
+      console.error('Error fetching restaurant:', error.message);
+    } else {
+      console.error('Error fetching restaurant:', error);
+    }
     throw error;
   }
 }
