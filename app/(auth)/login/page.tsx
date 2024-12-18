@@ -1,5 +1,5 @@
 'use client';
-import styles from "/Users/lucagattamelata/take-a-seat/app/ui/loginform.module.css";
+import styles from "../../ui/loginform.module.css";
 import { useState } from "react";
 import { useAuth } from "../../../hooks/useAuth";
 import { useRouter } from "next/navigation";
