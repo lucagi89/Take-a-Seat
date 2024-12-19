@@ -43,12 +43,10 @@ export default function useMap(
   setMap: React.Dispatch<React.SetStateAction<mapboxgl.Map | null>>
 ) {
   const { setMapState } = useMapContext();
+  mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_API_KEY as string;
 
   useEffect(() => {
     if (!mapContainerRef.current) return;
-
-    mapboxgl.accessToken = 'pk.eyJ1IjoibHVrZS1naSIsImEiOiJjbTRraWV4cGEwZG9kMmlzY3hwOXFhdWZoIn0.RvUFk1iiTWdoWBujUM1Owg';
-
 
     const mapInstance = new mapboxgl.Map({
       container: mapContainerRef.current,
@@ -57,11 +55,11 @@ export default function useMap(
       zoom: 14,
     });
 
-    setMap(mapInstance);
-
-    // Call handleUserLocation and pass setMapState
-    handleUserLocation(mapInstance, setMapState);
+    if (mapInstance){
+      handleUserLocation(mapInstance, setMapState);
+      setMap(mapInstance);
+    }
 
     return () => mapInstance.remove();
-  }, [mapContainerRef, setMap, setMapState]);
+  }, [mapContainerRef, setMap, setMapState])
 }

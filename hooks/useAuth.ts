@@ -7,6 +7,7 @@ import {
   onAuthStateChanged,
   User,
 } from "firebase/auth";
+import { useRouter } from "next/navigation";
 
 // Define the interface for the authentication functions and state
 interface UseAuth {
@@ -24,12 +25,20 @@ export const useAuth = (): UseAuth => {
 
   // Sync the user state with Firebase auth
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
+    let isMounted = true;
 
-    return () => unsubscribe(); // Clean up the listener on unmount
+  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    if (isMounted) {
+      setUser(currentUser || null);
+      setLoading(false);
+    }
+  });
+
+    return () => {
+      isMounted = false;
+      unsubscribe();
+      setUser(null); // Reset user on unmount or cleanup
+    };
   }, []);
 
   // Sign up function
@@ -37,7 +46,8 @@ export const useAuth = (): UseAuth => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
-      window.location.href = "/complete-profile";
+      const router = useRouter();
+      router.push("/registration");
     } catch (error) {
       console.error("Error signing up:", error);
       throw error; // Re-throw the error for the caller to handle
@@ -53,6 +63,7 @@ export const useAuth = (): UseAuth => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
+
     } catch (error: any) {
       console.error("Error logging in:", error.code);
       if (error.code === "auth/invalid-email") {

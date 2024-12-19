@@ -1,32 +1,16 @@
-import { GoogleAuthProvider, signInWithPopup, UserCredential } from "firebase/auth";
-import { auth } from "../lib/firebase.config";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { useRouter } from "next/navigation";
 
-const googleSignIn = async (): Promise<void> => {
+export default async function googleSignIn(){
+  const auth = getAuth();
   const provider = new GoogleAuthProvider();
-
+  const router = useRouter();
   try {
-    // Sign in with Google
-    const result: UserCredential = await signInWithPopup(auth, provider);
-
-    // Extract the authenticated user
+    const result = await signInWithPopup(auth, provider);
     const user = result.user;
-    console.log("User Info:", user);
-
-    // Extract the Google credential and token
-    const credential = GoogleAuthProvider.credentialFromResult(result);
-    const token = credential?.accessToken;
-    console.log("Google Access Token:", token);
-
-    // Additional logic (e.g., save user info to the database)
-  } catch (error: unknown) {
-    // Firebase errors have the `code` and `message` properties
-    if (error instanceof Error) {
-      console.error("Error Code:", (error as any)?.code);
-      console.error("Error Message:", error.message);
-    } else {
-      console.error("Unexpected error during Google Sign-In:", error);
-    }
+    console.log("Google sign-in successful:", user);
+    router.push("/");
+  } catch (error: any) {
+    console.error("Error during Google sign-in:", error.message);
   }
 };
-
-export default googleSignIn;

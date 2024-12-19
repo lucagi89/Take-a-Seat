@@ -1,5 +1,6 @@
 'use client';
 import styles from "../../ui/loginform.module.css";
+import googleSignIn  from "../../../hooks/googleAuth";
 import { useState } from "react";
 import { useAuth } from "../../../hooks/useAuth";
 import { useRouter } from "next/navigation";
@@ -9,20 +10,60 @@ export default function LoginForm() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false); // Loading state
   const router = useRouter();
-
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+    setIsLoading(true); // Start loading
+
+    // Email Validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert("Please enter a valid email address.");
+      setError("Please enter a valid email address.");
+      setIsLoading(false); // Stop loading
+      return;
+    }
+
+    // Password Validation
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])(?=.{8,}$)/; // More robust
+    if (!passwordRegex.test(password)) {
+      alert(
+        "Password must be at least 8 characters long, include a number, an uppercase letter, and a special character."
+      );
+      setError(
+        "Password must be at least 8 characters long, include a number, an uppercase letter, and a special character."
+      );
+      setIsLoading(false); // Stop loading
+      return;
+    }
+
     try {
-      await login(email, password);
-      // alert("Login successful!");
-      router.push("/");
-    } catch {
-      alert("Login failed. Please try again.");
+      await login(email, password).then(() => {
+        router.push("/");
+      });
+
+      // router.push("/");
+    } catch (error: any) {
+      console.error("Firebase error code:", error.code);
+      console.error("Firebase error message:", error.message);
+
+      if (error.code === "auth/user-not-found") {
+        router.push("/registration");
+      } else if (error.code === "auth/wrong-password") {
+        setError("Incorrect email or password.");
+      } else if (error.code === "auth/network-request-failed") {
+        setError("Network error. Please try again later.");
+      } else {
+        setError("An unexpected error occurred.");
+      }
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
+
 
   return (
     <div>
@@ -74,6 +115,7 @@ export default function LoginForm() {
       <button
         type="button"
         className="text-gray bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
+        onClick={async () => googleSignIn()}
       >
         <svg
           className="w-4 h-4 me-2"
