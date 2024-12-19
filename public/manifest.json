@@ -21,8 +21,8 @@
   "theme_color": "#000000",
   "icons": [
     {
-      "src": "./../images/icon-image.png",
-      "sizes": "500x500",
+      "src": "./images/logo2.png",
+      "sizes": "1080x1080",
       "type": "image/png",
       "purpose": "any maskable"
     },
