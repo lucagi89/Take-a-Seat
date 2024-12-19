@@ -25,12 +25,6 @@
       "sizes": "1080x1080",
       "type": "image/png",
       "purpose": "any maskable"
-    },
-    {
-      "src": "./../images/icon-144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "any maskable"
     }
   ]
 }
