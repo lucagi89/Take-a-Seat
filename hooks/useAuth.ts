@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { auth } from "../lib/firebase.config";
+import { useRouter } from "next/navigation";
+import { auth } from "../lib/firebase.config"; // Use the shared `auth` instance
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -7,7 +8,6 @@ import {
   onAuthStateChanged,
   User,
 } from "firebase/auth";
-import { useRouter } from "next/navigation";
 
 // Define the interface for the authentication functions and state
 interface UseAuth {
@@ -21,33 +21,25 @@ interface UseAuth {
 // Define the custom hook
 export const useAuth = (): UseAuth => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter(); // Move `useRouter` inside the hook
 
-  // Sync the user state with Firebase auth
   useEffect(() => {
-    let isMounted = true;
+    // Listen for changes to the user's authentication state
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser); // Update the user state
+      setLoading(false); // Auth state is resolved
+    });
 
-  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-    if (isMounted) {
-      setUser(currentUser || null);
-      setLoading(false);
-    }
-  });
-
-    return () => {
-      isMounted = false;
-      unsubscribe();
-      setUser(null); // Reset user on unmount or cleanup
-    };
+    return () => unsubscribe(); // Cleanup the listener on unmount
   }, []);
 
   // Sign up function
   const signUp = async (email: string, password: string): Promise<void> => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      setUser(userCredential.user);
-      const router = useRouter();
-      router.push("/registration");
+      setUser(userCredential.user); // Update the user state
+      router.push("/registration"); // Redirect to registration page
     } catch (error) {
       console.error("Error signing up:", error);
       throw error; // Re-throw the error for the caller to handle
@@ -60,29 +52,48 @@ export const useAuth = (): UseAuth => {
       throw new Error("Email and password must not be empty.");
     }
 
+    // Validate email and password
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      throw new Error("Invalid email format.");
+    }
+
+    if (password.length < 6) {
+      throw new Error("Password must be at least 6 characters long.");
+    }
+
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log("Logged in user:", userCredential.user);
       setUser(userCredential.user);
-
+      router.push("/");
     } catch (error: any) {
-      console.error("Error logging in:", error.code);
-      if (error.code === "auth/invalid-email") {
+      console.error("Firebase error code:", error.code);
+      console.error("Firebase error message:", error.message);
+
+      if (error.code === "auth/user-not-found") {
+        signUp(email, password);
+        router.push("/registration");
+      } else if (error.code === "auth/invalid-email") {
         throw new Error("Invalid email format.");
-      } else if (error.code === "auth/user-not-found") {
-        throw new Error("No user found with this email.");
       } else if (error.code === "auth/wrong-password") {
         throw new Error("Incorrect password.");
+      } else if (error.code === "auth/invalid-credential") {
+        signUp(email, password);
+        router.push("/registration");
+        throw new Error("Invalid credentials provided. Please check your Firebase configuration.");
       } else {
         throw new Error("An error occurred during login.");
       }
     }
   };
 
+
   // Logout function
   const logout = async (): Promise<void> => {
     try {
       await signOut(auth);
-      setUser(null);
+      setUser(null); // Clear the user state
     } catch (error) {
       console.error("Error logging out:", error);
       throw error; // Re-throw the error for the caller to handle

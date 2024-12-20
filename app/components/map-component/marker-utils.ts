@@ -17,22 +17,32 @@ export const handleUserLocation = (
     return;
   }
 
-  // Request user location
+  // Wait for the map to load
+  if (!map || !map.isStyleLoaded()) {
+    console.error("Map is not fully loaded.");
+    map?.on("load", () => {
+      // Proceed with geolocation once the map is ready
+      requestUserLocation(map, setMapState);
+    });
+  } else {
+    // Map is already loaded, proceed with geolocation
+    requestUserLocation(map, setMapState);
+  }
+};
+
+// Request user location and add marker
+const requestUserLocation = (
+  map: mapboxgl.Map,
+  setMapState: (state: { center: [number, number]; zoom: number }) => void
+) => {
   navigator.geolocation.getCurrentPosition(
     (position) => {
       const { longitude, latitude } = position.coords;
 
-      console.log(map)
-
-      if (!map) {
-        console.error("Map is not initialized.");
-        return;
-      }
-
       // Add a blue marker at the user's location
-      // new mapboxgl.Marker({ color: "blue" })
-      //   .setLngLat([longitude, latitude])
-      //   .addTo(map);
+      new mapboxgl.Marker({ color: "blue" })
+        .setLngLat([longitude, latitude])
+        .addTo(map);
 
       // Fly to the user's location
       map.flyTo({ center: [longitude, latitude], zoom: 14 });

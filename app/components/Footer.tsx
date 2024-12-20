@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import styles from '../ui/footer.module.css'; // Add your CSS here
 
-const Footer: React.FC = () => {
+export default function Footer(props: { user: any }) {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   const toggleMenu = (): void => setIsMenuOpen(!isMenuOpen);
@@ -36,5 +36,3 @@ const Footer: React.FC = () => {
     </>
   );
 };
-
-export default Footer;

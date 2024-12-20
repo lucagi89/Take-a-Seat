@@ -7,17 +7,25 @@ import Footer from './components/Footer'
 
 export default function Home() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
-    if (!user) {
+    if (!loading && !user) {
+      console.log("No user, redirecting to login...");
       router.push("/login");
     }
-  }, [user]);
+  }, [loading, user, router]);
+
+  if (loading) {
+    return <p>Loading...</p>; // Show a loading indicator while auth state is being resolved
+  }
+
+
   return (
     <div style={{height: '100vh'}}>
         <MapComponent />
-        <Footer />
+        <Footer user={user}/>
     </div>
   );
+
 }

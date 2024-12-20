@@ -40,7 +40,6 @@ export async function getRestaurantData(name: string) {
 
     // Return the first matching document
     const restaurantData = querySnapshot.docs[0].data();
-    console.log('Server Restaurant Data:', restaurantData);
     return restaurantData;
   } catch (error) {
     if (error instanceof Error) {
