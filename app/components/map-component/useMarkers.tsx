@@ -5,7 +5,7 @@ import { fetchRestaurants } from './fetchRestaurants'
 import PopupComponent from '../PopupComponent';
 import { createRoot } from 'react-dom/client';
 
-// import { createPulsingMarker } from './marker-utils';
+
 
 export default function useMarkers(map: mapboxgl.Map | null) {
   const [restaurants, setRestaurants] = useState([]);
