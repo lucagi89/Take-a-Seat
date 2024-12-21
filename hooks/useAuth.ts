@@ -9,6 +9,7 @@ import {
   User,
 } from "firebase/auth";
 
+
 // Define the interface for the authentication functions and state
 interface UseAuth {
   user: User | null;
@@ -39,7 +40,7 @@ export const useAuth = (): UseAuth => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user); // Update the user state
-      router.push("/registration"); // Redirect to registration page
+      // router.push(`/signup?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`); // Redirect to registration page
     } catch (error) {
       console.error("Error signing up:", error);
       throw error; // Re-throw the error for the caller to handle
