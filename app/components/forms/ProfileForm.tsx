@@ -84,7 +84,7 @@ export default function ProfileForm(props: { email: string | null; password: str
         }
         console.log("Signup successful, redirecting...");
         router.push("/");
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error("Error signing up:", error);
       }
     } else if (user.email !== email) {

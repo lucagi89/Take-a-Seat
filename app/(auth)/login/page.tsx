@@ -4,20 +4,23 @@ import googleSignIn from "../../../hooks/googleAuth";
 import { useState } from "react";
 import { useAuth } from "../../../hooks/useAuth";
 import { useRouter } from "next/navigation";
+import { FirebaseError } from "firebase/app"; // Import FirebaseError type
 
 export default function LoginForm() {
-  const { login, signUp } = useAuth();
+  const { login } = useAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [ isLoading, setIsLoading ] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  console.log(isLoading);
 
   // Form submission handler
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const action = (e.nativeEvent as SubmitEvent).submitter?.value; // Detect the button clicked
+    const submitter = (e.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null; // Detect the button clicked
+    const action = submitter?.value;
     setError(null);
     setIsLoading(true);
 
@@ -44,8 +47,8 @@ export default function LoginForm() {
         router.push(`/signup?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`);
         console.log("Signing up...");
       }
-    } catch (error: any) {
-      handleFirebaseError(error);
+    } catch (error) {
+      handleFirebaseError(error); // Pass the error to the handler
     } finally {
       setIsLoading(false);
     }
@@ -64,17 +67,22 @@ export default function LoginForm() {
   };
 
   // Handle Firebase errors
-  const handleFirebaseError = (error: any) => {
-    console.error("Firebase error code:", error.code);
-    console.error("Firebase error message:", error.message);
+  const handleFirebaseError = (error: unknown) => {
+    if (error instanceof FirebaseError) {
+      console.error("Firebase error code:", error.code);
+      console.error("Firebase error message:", error.message);
 
-    if (error.code === "auth/user-not-found") {
-      setError("User not found. Please sign up.");
-    } else if (error.code === "auth/wrong-password") {
-      setError("Incorrect email or password.");
-    } else if (error.code === "auth/network-request-failed") {
-      setError("Network error. Please try again later.");
+      if (error.code === "auth/user-not-found") {
+        setError("User not found. Please sign up.");
+      } else if (error.code === "auth/wrong-password") {
+        setError("Incorrect email or password.");
+      } else if (error.code === "auth/network-request-failed") {
+        setError("Network error. Please try again later.");
+      } else {
+        setError("An unexpected error occurred.");
+      }
     } else {
+      console.error("Unknown error:", error);
       setError("An unexpected error occurred.");
     }
   };

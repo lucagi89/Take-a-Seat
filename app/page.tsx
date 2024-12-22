@@ -24,7 +24,7 @@ export default function Home() {
   return (
     <div style={{height: '100vh'}}>
         <MapComponent />
-        <Footer user={user}/>
+        <Footer/>
     </div>
   );
 
