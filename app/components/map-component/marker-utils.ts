@@ -19,7 +19,7 @@ export const handleUserLocation = (
 
   // Wait for the map to load
   if (!map || !map.isStyleLoaded()) {
-    console.error("Map is not fully loaded.");
+    // console.error("Map is not fully loaded.");
     map?.on("load", () => {
       // Proceed with geolocation once the map is ready
       requestUserLocation(map, setMapState);

@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { FirebaseError } from "firebase/app"; // Import FirebaseError type
 
 export default function LoginForm() {
-  const { login } = useAuth();
+  const { login, handleFirebaseError } = useAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -66,26 +66,26 @@ export default function LoginForm() {
     return passwordRegex.test(password);
   };
 
-  // Handle Firebase errors
-  const handleFirebaseError = (error: unknown) => {
-    if (error instanceof FirebaseError) {
-      console.error("Firebase error code:", error.code);
-      console.error("Firebase error message:", error.message);
+  // // Handle Firebase errors
+  // const handleFirebaseError = (error: unknown) => {
+  //   if (error instanceof FirebaseError) {
+  //     console.error("Firebase error code:", error.code);
+  //     console.error("Firebase error message:", error.message);
 
-      if (error.code === "auth/user-not-found") {
-        setError("User not found. Please sign up.");
-      } else if (error.code === "auth/wrong-password") {
-        setError("Incorrect email or password.");
-      } else if (error.code === "auth/network-request-failed") {
-        setError("Network error. Please try again later.");
-      } else {
-        setError("An unexpected error occurred.");
-      }
-    } else {
-      console.error("Unknown error:", error);
-      setError("An unexpected error occurred.");
-    }
-  };
+  //     if (error.code === "auth/user-not-found") {
+  //       setError("User not found. Please sign up.");
+  //     } else if (error.code === "auth/wrong-password") {
+  //       setError("Incorrect email or password.");
+  //     } else if (error.code === "auth/network-request-failed") {
+  //       setError("Network error. Please try again later.");
+  //     } else {
+  //       setError("An unexpected error occurred.");
+  //     }
+  //   } else {
+  //     console.error("Unknown error:", error);
+  //     setError("An unexpected error occurred.");
+  //   }
+  // };
 
   return (
     <div>

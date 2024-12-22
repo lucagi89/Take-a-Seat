@@ -53,9 +53,8 @@ export const useAuth = (): UseAuth => {
       throw new Error("Email and password must not be empty.");
     }
 
-    // Validate email and password
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    // Email and Password Validation
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       throw new Error("Invalid email format.");
     }
 
@@ -65,29 +64,32 @@ export const useAuth = (): UseAuth => {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
       console.log("Logged in user:", userCredential.user);
       setUser(userCredential.user);
-      router.push("/");
-    } catch (error: any) {
-      console.error("Firebase error code:", error.code);
-      console.error("Firebase error message:", error.message);
 
-      if (error.code === "auth/user-not-found") {
-        signUp(email, password);
-        router.push("/registration");
-      } else if (error.code === "auth/invalid-email") {
-        throw new Error("Invalid email format.");
-      } else if (error.code === "auth/wrong-password") {
-        throw new Error("Incorrect password.");
-      } else if (error.code === "auth/invalid-credential") {
-        signUp(email, password);
-        router.push("/registration");
-        throw new Error("Invalid credentials provided. Please check your Firebase configuration.");
-      } else {
-        throw new Error("An error occurred during login.");
-      }
+      router.push("/"); // Redirect to home on success
+    } catch (error: any) {
+      handleFirebaseError(error);
     }
   };
+
+  // Handle Firebase Errors
+  const handleFirebaseError = (error: any): never => {
+    const errorMessages: Record<string, string> = {
+      "auth/user-not-found": "User not found. Please sign up.",
+      "auth/invalid-email": "Invalid email format.",
+      "auth/wrong-password": "Incorrect password.",
+      "auth/invalid-credential": "User not found. Please sign up.",
+    };
+
+    console.error("Firebase error code:", error.code);
+    console.error("Firebase error message:", error.message);
+
+    // Throw a specific error message or fallback
+    throw new Error(errorMessages[error.code] || "An error occurred during login.");
+  };
+
 
 
   // Logout function
