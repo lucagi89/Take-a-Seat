@@ -7,52 +7,23 @@ import { useRouter } from "next/navigation";
 import { FirebaseError } from "firebase/app"; // Import FirebaseError type
 
 export default function LoginForm() {
-  const { login, handleFirebaseError } = useAuth();
+  const { login } = useAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
+  const [loginError, setLoginError] = useState<string | null>(null);
   const [ isLoading, setIsLoading ] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
-  console.log(isLoading);
+  // console.log(isLoading);
 
   // Form submission handler
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const submitter = (e.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null; // Detect the button clicked
     const action = submitter?.value;
-    setError(null);
+    setLoginError(null);
     setIsLoading(true);
 
-    // Validate email and password
-    if (!validateEmail(email)) {
-      setError("Please enter a valid email address.");
-      setIsLoading(false);
-      return;
-    }
-
-    if (!validatePassword(password)) {
-      setError(
-        "Password must be at least 8 characters long, include a number, an uppercase letter, and a special character."
-      );
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      if (action === "login") {
-        await login(email, password);
-        console.log("Login successful, redirecting...");
-      } else if (action === "signup") {
-        router.push(`/signup?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`);
-        console.log("Signing up...");
-      }
-    } catch (error) {
-      handleFirebaseError(error); // Pass the error to the handler
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   // Email validation
   const validateEmail = (email: string) => {
@@ -66,26 +37,35 @@ export default function LoginForm() {
     return passwordRegex.test(password);
   };
 
-  // // Handle Firebase errors
-  // const handleFirebaseError = (error: unknown) => {
-  //   if (error instanceof FirebaseError) {
-  //     console.error("Firebase error code:", error.code);
-  //     console.error("Firebase error message:", error.message);
 
-  //     if (error.code === "auth/user-not-found") {
-  //       setError("User not found. Please sign up.");
-  //     } else if (error.code === "auth/wrong-password") {
-  //       setError("Incorrect email or password.");
-  //     } else if (error.code === "auth/network-request-failed") {
-  //       setError("Network error. Please try again later.");
-  //     } else {
-  //       setError("An unexpected error occurred.");
-  //     }
-  //   } else {
-  //     console.error("Unknown error:", error);
-  //     setError("An unexpected error occurred.");
-  //   }
-  // };
+  if (!validateEmail(email)) {
+    setLoginError("Please enter a valid email address.");
+    setIsLoading(false);
+    return;
+  } else if (!validatePassword(password)){
+    setLoginError(
+      "Password must be at least 8 characters long, include a number, an uppercase letter, and a special character."
+    );
+    setIsLoading(false);
+    return;
+  } else {
+    try{
+      if (action === "login") {
+      await login(email, password);
+      console.log("Login successful, redirecting...");
+    } else if (action === "signup") {
+      router.push(`/signup?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`);
+      console.log("Signing up...");
+    }
+    } catch (error: unknown) {
+      setLoginError(error.message)
+      setIsLoading(false);
+    }
+
+  }
+
+
+}
 
   return (
     <div>
@@ -160,30 +140,8 @@ export default function LoginForm() {
         </div>
       </form>
 
-      {/* Google Sign-In Button */}
-      <button
-        type="button"
-        className="text-gray bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
-        onClick={async () => googleSignIn()}
-      >
-        <svg
-          className="w-4 h-4 me-2"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="currentColor"
-          viewBox="0 0 18 19"
-        >
-          <path
-            fillRule="evenodd"
-            d="M8.842 18.083a8.8 8.8 0 0 1-8.65-8.948 8.841 8.841 0 0 1 8.8-8.652h.153a8.464 8.464 0 0 1 5.7 2.257l-2.193 2.038A5.27 5.27 0 0 0 9.09 3.4a5.882 5.882 0 0 0-.2 11.76h.124a5.091 5.091 0 0 0 5.248-4.057L14.3 11H9V8h8.34c.066.543.095 1.09.088 1.636-.086 5.053-3.463 8.449-8.4 8.449l-.186-.002Z"
-            clipRule="evenodd"
-          />
-        </svg>
-        Sign in with Google
-      </button>
-
       {/* Error Message */}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {loginError && <p style={{ color: "red" }}>{loginError}</p>}
     </div>
   );
 }

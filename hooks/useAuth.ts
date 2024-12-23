@@ -17,6 +17,7 @@ interface UseAuth {
   signUp: (email: string, password: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  handleFirebaseError: (error: any) => never;
 }
 
 // Define the custom hook
@@ -70,7 +71,7 @@ export const useAuth = (): UseAuth => {
 
       router.push("/"); // Redirect to home on success
     } catch (error: any) {
-      handleFirebaseError(error);
+      handleFirebaseError(error.code);
     }
   };
 
@@ -82,13 +83,9 @@ export const useAuth = (): UseAuth => {
       "auth/wrong-password": "Incorrect password.",
       "auth/invalid-credential": "User not found. Please sign up.",
     };
-
-    console.error("Firebase error code:", error.code);
-    console.error("Firebase error message:", error.message);
-
-    // Throw a specific error message or fallback
-    throw new Error(errorMessages[error.code] || "An error occurred during login.");
+    throw new Error(errorMessages[error] || "An error occurred during login.");
   };
+
 
 
 
@@ -109,5 +106,6 @@ export const useAuth = (): UseAuth => {
     signUp,
     login,
     logout,
+    handleFirebaseError
   };
 };
