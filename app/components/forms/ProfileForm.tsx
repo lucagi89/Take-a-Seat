@@ -16,8 +16,8 @@ export default function ProfileForm(props: { email: string | null; password: str
   const { email, password } = props;
 
   const [user, setUser] = useState({
-    email: '',
-    password: ''
+    email: email || '',
+    password: password || '',
   });
 
   const [completeUser, setCompleteUser] = useState({
@@ -64,10 +64,6 @@ export default function ProfileForm(props: { email: string | null; password: str
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // const user = auth.currentUser;
-
-    if (user.email === email && user.password === password) {
-
       try {
         if (email && password) {
           await signUp(email, password);
@@ -89,28 +85,19 @@ export default function ProfileForm(props: { email: string | null; password: str
       } catch (error: unknown) {
         console.error("Error signing up:", error);
       }
-    } else if (user.email !== email) {
-      console.error("Email do not match.");
-    } else {
-      console.error("Password do not match.");
-    }
   };
 
   return (
 <form className={`${styles.form} max-w-md mx-auto`} onSubmit={handleProfileSubmit}>
+<h1>Signup Page</h1>
   {/* Email Input */}
   <div className="relative z-0 w-80 my-5 group">
     <input
-      type="email"
       name="email"
       id="email"
       className="block py-2.5 px-100 w-full text-sm text-black-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-white-500 focus:outline-none focus:ring-0 focus:border-white-800 peer"
-      placeholder=" "
-      // defaultValue={email || ""}
-      value={user.email}
-      onChange={(e) => setUser({ ...user, email: e.target.value })}
-      autoComplete="email"
-      required
+      defaultValue={email || ""}
+      readOnly
     />
     <label
       htmlFor="email"
@@ -127,12 +114,8 @@ export default function ProfileForm(props: { email: string | null; password: str
       name="password"
       id="password"
       className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-white-600 peer"
-      placeholder=" "
-      // defaultValue={password || ""}
-      value={user.password}
-      onChange={(e) => setUser({ ...user, password: e.target.value })}
-      autoComplete="current-password"
-      required
+      defaultValue={password || ""}
+      readOnly
     />
     <label
       htmlFor="password"
@@ -159,7 +142,7 @@ export default function ProfileForm(props: { email: string | null; password: str
     { label: "Country", key: "country", type: "text" },
     { label: "Phone", key: "phone", type: "text" },
   ].map((field) => (
-    <GenericFormField field={field} completeUser={completeUser} setCompleteUser={setCompleteUser} />
+    <GenericFormField key={field.label} field={field} completeUser={completeUser} setCompleteUser={setCompleteUser} />
   ))}
 
   {/* Cuisine Select */}
@@ -218,9 +201,9 @@ export default function ProfileForm(props: { email: string | null; password: str
   {/* Submit Button */}
   <button
     type="submit"
-    className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+    className="py-2.5 px-10 me-2 mb-2 text-lg font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
   >
-    Submit
+    Take a Seat
   </button>
 </form>
 

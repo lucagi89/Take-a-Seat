@@ -21,7 +21,6 @@ function SignupContent() {
 
   return (
     <div>
-      <h1>Signup Page</h1>
       <ProfileForm email={email} password={password} />
     </div>
   );

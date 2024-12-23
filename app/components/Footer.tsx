@@ -1,13 +1,20 @@
 'use client';
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 import styles from '../ui/footer.module.css'; // Add your CSS here
 import { useAuth } from '../../hooks/useAuth'
+import { auth, usersRef } from '../../lib/firebase.config';
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 export default function Footer() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const { logout } = useAuth();
   const toggleMenu = (): void => setIsMenuOpen(!isMenuOpen);
   const closeMenu = (): void => setIsMenuOpen(false);
+  // const user = auth.currentUser;
+  // const q = query(usersRef, where("email", "==", user.email));
+  // const userData = usersRef.map
+  // console.log(userData);
+
 
   return (
     <>
@@ -31,6 +38,7 @@ export default function Footer() {
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
+            <li><button onClick={closeMenu}>Close</button></li>
             <li><button onClick={async () => logout()}>Sign out</button></li>
           </ul>
         </nav>
