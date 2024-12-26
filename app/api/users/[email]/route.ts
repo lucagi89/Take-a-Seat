@@ -5,7 +5,6 @@ export async function GET(req: Request, { params }: { params: { email: string } 
     const { email } = params;
 
     try {
-        // Replace with your database fetching logic
         const user = await getUserData(email);
 
         if (!user) {

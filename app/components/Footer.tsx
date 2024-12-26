@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import styles from '../ui/footer.module.css'; // Add your CSS here
 import { useAuth } from '../../hooks/useAuth';
 import { auth } from '../../lib/firebase.config';
+import Link from 'next/link';
 
 export default function Footer() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -64,9 +65,6 @@ export default function Footer() {
         </button>
         <nav>
           <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
             <li>
               {userData ? (
                 <>Hello, {userData.firstName || email}!</>
@@ -74,6 +72,7 @@ export default function Footer() {
                 <>Hello, {email}!</>
               )}
             </li>
+            <li><Link href='/profile'>Profile</Link></li>
             <li>
               <button onClick={async () => logout()}>Sign out</button>
             </li>
