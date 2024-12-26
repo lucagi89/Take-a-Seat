@@ -5,9 +5,16 @@ import { useAuth } from '../../hooks/useAuth';
 import { auth } from '../../lib/firebase.config';
 import Link from 'next/link';
 
+interface UserData {
+  firstName: string;
+  lastName: string;
+  address: string;
+  email: string;
+}
+
 export default function Footer() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const [userData, setUserData] = useState<any>(null); // State to hold fetched user data
+  const [userData, setUserData] = useState<UserData | null>(null);
   const { logout } = useAuth();
 
   const user = auth.currentUser;

@@ -7,7 +7,14 @@ import { auth } from '../../lib/firebase.config';
 export default function ProfilePage() {
   const user = auth.currentUser;
   const email = user?.email;
-  const [userData, setUserData] = useState<any>(null); // State to hold fetched user data
+  interface UserData {
+    firstName: string;
+    lastName: string;
+    address: string;
+    email: string;
+  }
+
+  const [userData, setUserData] = useState<UserData | null>(null); // State to hold fetched user data
 
     // Fetch user
 
