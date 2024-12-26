@@ -1,39 +1,49 @@
 'use client';
-import React, { use, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../ui/footer.module.css'; // Add your CSS here
-import { useAuth } from '../../hooks/useAuth'
-import { auth, db } from '../../lib/firebase.config';
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { useAuth } from '../../hooks/useAuth';
+import { auth } from '../../lib/firebase.config';
 
 export default function Footer() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [userData, setUserData] = useState<any>(null); // State to hold fetched user data
   const { logout } = useAuth();
+
+  const user = auth.currentUser;
+  const email = user?.email; // Ensure email is only accessed if user is not null
+
+  // Toggle menu functions
   const toggleMenu = (): void => setIsMenuOpen(!isMenuOpen);
   const closeMenu = (): void => setIsMenuOpen(false);
-  const user = auth.currentUser;
 
-  const getUser = async () => {
-    const q = query(collection(db, 'users'), where('email', '==', user.email));
-    // const q = query(usersRef, where("email", "==", user.email));
-    const querySnapshot = await getDocs(q);
-    // console.log(querySnapshot)
-    querySnapshot.forEach((doc) => {
-      return doc.data()
-    });
+  // Fetch user data effect
+  useEffect(() => {
+    if (!email) return;
 
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(`/api/users/${encodeURIComponent(email)}`);
+
+        if (!response.ok) {
+          console.error('Error fetching user:', response.status, response.statusText);
+          return;
+        }
+
+        const data = await response.json();
+        setUserData(data); // Store the fetched user data in state
+        console.log('Fetched user:', data);
+      } catch (error) {
+        console.error('Error fetching user:', error.message);
+      }
+    };
+
+    fetchUser();
+  }, [email]); // Depend on email to fetch user data when it changes
+
+  // If the user is not authenticated, don't render the footer
+  if (!user) {
+    return null;
   }
-  const userData = getUser()
-  const userName = userData?.firstName
-
-  // const q = query(usersRef, where("email", "==", user.email));
-  // const getUser = async () => {
-  //   const querySnapshot = await getDocs(q);
-  //   querySnapshot.forEach((doc) => {
-  //     // console.log(doc.id, " => ", doc.data());
-  //     console.log('yooo')
-  //   });
-  // }
-  // console.log(user.email)
 
   return (
     <>
@@ -57,11 +67,19 @@ export default function Footer() {
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
-            <li>Hello {userName}!</li>
-            <li><button onClick={async () => logout()}>Sign out</button></li>
+            <li>
+              {userData ? (
+                <>Hello, {userData.firstName || email}!</>
+              ) : (
+                <>Hello, {email}!</>
+              )}
+            </li>
+            <li>
+              <button onClick={async () => logout()}>Sign out</button>
+            </li>
           </ul>
         </nav>
       </div>
     </>
   );
-};
+}

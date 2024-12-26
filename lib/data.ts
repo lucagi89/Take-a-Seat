@@ -12,7 +12,8 @@ export default async function fetchRestaurants(): Promise<Restaurant[]> {
     id: doc.id,
     ...doc.data() as DocumentData
   }));
-  return restaurants as Restaurant[];
+  // return restaurants as Restaurant[];
+  console.log(restaurants);
 }
 
 // fetchRestaurants();
@@ -49,4 +50,17 @@ export async function getRestaurantData(name: string) {
     }
     throw error;
   }
+}
+
+export async function getUserData(email: string) {
+  const usersRef = collection(db, "users");
+  const q = query(usersRef, where("email", "==", email));
+
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.empty) {
+      return null; // Return null if no user is found
+  }
+
+  const userData = querySnapshot.docs[0].data(); // Assuming only one user per email
+  return userData;
 }
