@@ -1,10 +1,10 @@
 'use client';
 import styles from "../../ui/loginform.module.css";
-import googleSignIn from "../../../hooks/googleAuth";
+// import googleSignIn from "../../../hooks/googleAuth";
 import { useState } from "react";
 import { useAuth } from "../../../hooks/useAuth";
 import { useRouter } from "next/navigation";
-import { FirebaseError } from "firebase/app"; // Import FirebaseError type
+// import { FirebaseError } from "firebase/app"; // Import FirebaseError type
 
 export default function LoginForm() {
   const { login } = useAuth();
@@ -14,7 +14,7 @@ export default function LoginForm() {
   const [ isLoading, setIsLoading ] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
-  // console.log(isLoading);
+  console.log(isLoading);
 
   // Form submission handler
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

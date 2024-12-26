@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 
-import { useAuth } from '../../hooks/useAuth';
+// import { useAuth } from '../../hooks/useAuth';
 import { auth } from '../../lib/firebase.config';
 
 export default function ProfilePage() {
@@ -28,7 +28,11 @@ export default function ProfilePage() {
           setUserData(data); // Store the fetched user data in state
           console.log('Fetched user:', data);
         } catch (error) {
-          console.error('Error fetching user:', error.message);
+          if (error instanceof Error) {
+            console.error('Error fetching user:', error.message);
+          } else {
+            console.error('Error fetching user:', error);
+          }
         }
       };
 

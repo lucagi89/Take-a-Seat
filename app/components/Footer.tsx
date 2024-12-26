@@ -34,7 +34,11 @@ export default function Footer() {
         setUserData(data); // Store the fetched user data in state
         console.log('Fetched user:', data);
       } catch (error) {
-        console.error('Error fetching user:', error.message);
+        if (error instanceof Error) {
+          console.error('Error fetching user:', error.message);
+        } else {
+          console.error('Error fetching user:', error);
+        }
       }
     };
 
