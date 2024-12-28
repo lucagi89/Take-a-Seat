@@ -4,6 +4,21 @@ import { db } from './firebase.config';
 import { DocumentData } from 'firebase/firestore';
 import {Restaurant} from '../types/data-types'
 
+export interface User {
+  firstName: string;
+  lastName: string;
+  address: string;
+  email: string;
+  city: string;
+  country: string;
+  favouriteCuisine: string;
+  secondFavouriteCuisine: string;
+  phone: string;
+  postcode: string;
+  streetAddress: string;
+}
+
+
 export default async function fetchRestaurants(): Promise<Restaurant[]> {
 
   const collectionRef = collection(db, 'restaurants');
@@ -21,6 +36,7 @@ export default async function fetchRestaurants(): Promise<Restaurant[]> {
 
 
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import { use } from 'react';
 // import { firebaseApp } from './firebase';
 
 // const db = getFirestore(firebaseApp);

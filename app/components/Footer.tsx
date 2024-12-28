@@ -1,61 +1,17 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import styles from '../ui/footer.module.css'; // Add your CSS here
-import { useAuth } from '../../hooks/useAuth';
-import { auth } from '../../lib/firebase.config';
+
+import React, { useState } from 'react';
+import styles from '../ui/footer.module.css';
+import { useAuth } from '../../contexts/AuthContext';
 import Link from 'next/link';
 
-interface UserData {
-  firstName: string;
-  lastName: string;
-  address: string;
-  email: string;
-}
-
 export default function Footer() {
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const { logout } = useAuth();
-
-  const user = auth.currentUser;
-  const email = user?.email; // Ensure email is only accessed if user is not null
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { logout, userData, error } = useAuth();
 
   // Toggle menu functions
   const toggleMenu = (): void => setIsMenuOpen(!isMenuOpen);
   const closeMenu = (): void => setIsMenuOpen(false);
-
-  // Fetch user data effect
-  useEffect(() => {
-    if (!email) return;
-
-    const fetchUser = async () => {
-      try {
-        const response = await fetch(`/api/users/${encodeURIComponent(email)}`);
-
-        if (!response.ok) {
-          console.error('Error fetching user:', response.status, response.statusText);
-          return;
-        }
-
-        const data = await response.json();
-        setUserData(data); // Store the fetched user data in state
-        console.log('Fetched user:', data);
-      } catch (error) {
-        if (error instanceof Error) {
-          console.error('Error fetching user:', error.message);
-        } else {
-          console.error('Error fetching user:', error);
-        }
-      }
-    };
-
-    fetchUser();
-  }, [email]); // Depend on email to fetch user data when it changes
-
-  // If the user is not authenticated, don't render the footer
-  if (!user) {
-    return null;
-  }
 
   return (
     <>
@@ -78,14 +34,28 @@ export default function Footer() {
           <ul>
             <li>
               {userData ? (
-                <>Hello, {userData.firstName || email}!</>
+                <>Hello, {userData.firstName || userData.email || 'Guest'}!</>
               ) : (
-                <>Hello, {email}!</>
+                <>Hello, Guest!</>
               )}
             </li>
-            <li><Link href='/profile'>Profile</Link></li>
+            {error && <li className={styles.error}>Error: {error}</li>}
             <li>
-              <button onClick={async () => logout()}>Sign out</button>
+              <Link href="/profile">Profile</Link>
+            </li>
+            <li>
+              <button
+                onClick={async () => {
+                  try {
+                    await logout();
+                    closeMenu(); // Close menu after successful logout
+                  } catch (err) {
+                    console.error('Logout failed:', err);
+                  }
+                }}
+              >
+                Sign out
+              </button>
             </li>
           </ul>
         </nav>

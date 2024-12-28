@@ -1,5 +1,7 @@
+'use client';
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../lib/firebase.config"; // Use the shared `auth` instance
 import {
   createUserWithEmailAndPassword,
@@ -75,8 +77,19 @@ export const useAuth = (): UseAuth => {
     }
   };
 
+async function signInWithGoogle() {
+  const provider = new GoogleAuthProvider();
+  try {
+    const result = await signInWithPopup(auth, provider);
+    console.log("Google user signed in:", result.user);
+  } catch (error) {
+    console.error("Error with Google sign-in:", error);
+  }
+}
+
+
   // Handle Firebase Errors
-  const handleFirebaseError = (error: any): never => {
+  const handleFirebaseError = (error: string): never => {
     const errorMessages: Record<string, string> = {
       "auth/user-not-found": "User not found. Please sign up.",
       "auth/invalid-email": "Invalid email format.",

@@ -1,19 +1,25 @@
-import { NextResponse } from "next/server";
-import { getUserData } from "../../../../lib/data";
+import { NextResponse, NextRequest } from 'next/server';
+import { getUserData, User } from '../../../../lib/data';
 
-export async function GET(req: Request, { params }: { params: { email: string } }) {
-    const { email } = params;
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const email = searchParams.get('email');
 
-    try {
-        const user = await getUserData(email);
+  if (!email) {
+    return NextResponse.json({ error: 'Email parameter is missing' }, { status: 400 });
+  }
 
-        if (!user) {
-            return NextResponse.json({ error: "User not found" }, { status: 404 });
-        }
+  try {
+    // Fetch user data
+    const user: User | null = await getUserData(email);
 
-        return NextResponse.json(user);
-    } catch (error) {
-        console.error("Error fetching user data:", error);
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
+
+    return NextResponse.json(user);
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
 }
