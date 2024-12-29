@@ -28,7 +28,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(auth.currentUser);
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -49,7 +48,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       try {
         return await getUserData(email);
       } catch (error) {
-        setError(error.message);
         console.error("Error fetching user data:", error);
         return null;
       }

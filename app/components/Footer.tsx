@@ -8,7 +8,7 @@ import Link from 'next/link';
 
 export default function Footer() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { userData, error } = useAuthentication();
+  const { userData } = useAuthentication();
   const { logout } = useAuth();
 
   // Toggle menu functions
