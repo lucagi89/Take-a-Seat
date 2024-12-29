@@ -1,22 +1,28 @@
-'use router';
+'use strict';
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { db } from '../lib/firebase.config.js';
-import { collection, addDoc, getDocs, writeBatch } from 'firebase/firestore';
+import admin from 'firebase-admin';
+import serviceAccount from '../config/take-a-seat-56e45-firebase-adminsdk-53osj-f12752dc50.json' assert { type: 'json' };
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+export const db = admin.firestore();
+
+// import { db } from '../lib/firebase.config.js';
+// import { collection, addDoc, getDocs, writeBatch } from 'firebase/firestore';
 import { fakeRestaurants } from './fakeRestaurants.js';
 
 
 deleteAllData('users');
 
-
-
 async function deleteAllData(collectionName) {
   try {
-
-    const docRef = collection(db, collectionName);
-    const snapshot = await getDocs(docRef);
-    const batch = writeBatch(db);
+    const collectionRef = db.collection(collectionName);
+    const snapshot = await collectionRef.get();
+    const batch = db.batch();
     let count = 0;
 
     if (snapshot.empty) {
@@ -24,7 +30,7 @@ async function deleteAllData(collectionName) {
       return { success: true };
     }
 
-    snapshot.docs.forEach((doc) => {
+    snapshot.forEach((doc) => {
       batch.delete(doc.ref);
       count++;
     });
@@ -38,17 +44,14 @@ async function deleteAllData(collectionName) {
   }
 }
 
-
 async function seedRestaurants() {
-  const restaurantsCollection = collection(db, 'restaurants');
+  const restaurantsCollection = db.collection('restaurants');
 
   try {
     await deleteAllData('restaurants');
 
     for (const restaurant of fakeRestaurants) {
-
-      await addDoc(restaurantsCollection, restaurant);
-
+      await restaurantsCollection.add(restaurant);
     }
 
     console.log('Restaurants added successfully!');
@@ -58,10 +61,12 @@ async function seedRestaurants() {
   }
 }
 
-seedRestaurants().then(() => {
-  console.log('Restaurants Seeding Completed');
-  process.exit(0); // Exit the script after completion
-}).catch((error) => {
-  console.error('Restaurants Seeding Failed:', error);
-  process.exit(1);
-});
+seedRestaurants()
+  .then(() => {
+    console.log('Restaurants Seeding Completed');
+    process.exit(0); // Exit the script after completion
+  })
+  .catch((error) => {
+    console.error('Restaurants Seeding Failed:', error);
+    process.exit(1);
+  });
