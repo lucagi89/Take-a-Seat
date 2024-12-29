@@ -21,7 +21,6 @@ interface UseAuth {
   signUp: (email: string, password: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  uploadAndSaveProfilePicture: (userId: string, file: File) => Promise<string>;
   handleFirebaseError: (error: any) => never;
 }
 
@@ -120,7 +119,6 @@ async function signInWithGoogle() {
     signUp,
     login,
     logout,
-    uploadAndSaveProfilePicture,
     handleFirebaseError
   };
 };

@@ -19,10 +19,6 @@ export default function ProfileForm(props: { email: string | null; password: str
 
   const { email, password } = props;
 
-  // const [user, setUser] = useState({
-  //   email: email || '',
-  //   password: password || '',
-  // });
 
   const [completeUser, setCompleteUser] = useState({
     firstName: "",
