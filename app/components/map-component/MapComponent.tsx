@@ -5,9 +5,8 @@ import { useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import useMap from './useMap';
 import useMarkers from './useMarkers';
-import withAuth from '../../hoc/withAuth';
 
-function MapComponent() {
+export default function MapComponent() {
   mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_API_KEY as string;
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<mapboxgl.Map | null>(null);
@@ -20,5 +19,3 @@ function MapComponent() {
 
   return <div ref={mapContainerRef} style={{ width: '100vw', height: '100vh' }} />;
 }
-
-export default withAuth(MapComponent);

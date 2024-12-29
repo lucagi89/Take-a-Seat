@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { getAuth } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../hooks/useAuth";
 import GenericFormField from "./GenericFormField";
@@ -13,6 +15,8 @@ export default function ProfileForm(props: { email: string | null; password: str
   const auth = getAuth();
   const db = getFirestore();
   const [showPassword, setShowPassword] = useState(false);
+  const [profilePicture, setProfilePicture] = useState<File | null>(null);
+
   const { email, password } = props;
 
   // const [user, setUser] = useState({
@@ -64,28 +68,43 @@ export default function ProfileForm(props: { email: string | null; password: str
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-      try {
-        if (email && password) {
-          await signUp(email, password);
-          if(!loading) {
-            const user = auth.currentUser;
-            if (user) {
+    try {
+      if (email && password) {
+        await signUp(email, password);
+
+        if (!loading) {
+          const user = auth.currentUser;
+          if (user) {
+            let profilePictureUrl = "";
+
+            // Upload profile picture if provided
+            if (profilePicture) {
+              const storage = getStorage();
+              const storageRef = ref(storage, `profilePictures/${user.uid}/${profilePicture.name}`);
+              const uploadResult = await uploadBytes(storageRef, profilePicture);
+              profilePictureUrl = await getDownloadURL(uploadResult.ref);
+            }
+
+            // Save user data in Firestore
             await setDoc(doc(db, "users", user.uid), {
               ...completeUser,
-              email: user.email
+              email: user.email,
+              profilePicture: profilePictureUrl || null, // Save the profile picture URL
             });
+
             console.log("Profile data saved successfully!");
           }
-          }
-        } else {
-          console.error("Email or password not provided.");
         }
-        console.log("Signup successful, redirecting...");
-        router.push("/");
-      } catch (error: unknown) {
-        console.error("Error signing up:", error);
+      } else {
+        console.error("Email or password not provided.");
       }
+      console.log("Signup successful, redirecting...");
+      router.push("/");
+    } catch (error: unknown) {
+      console.error("Error signing up:", error);
+    }
   };
+
 
   return (
 <form className={`${styles.form} max-w-md mx-auto`} onSubmit={handleProfileSubmit}>
@@ -197,6 +216,19 @@ export default function ProfileForm(props: { email: string | null; password: str
       Second Favourite Cuisine
     </label>
   </div>
+
+  <div className="relative z-0 w-80 my-5 group">
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) => setProfilePicture(e.target.files?.[0] || null)}
+    className="block w-full text-sm text-gray-900 bg-transparent border border-gray-300 rounded-lg cursor-pointer dark:text-gray-400 focus:outline-none"
+  />
+  <label className="text-sm text-gray-500 dark:text-gray-400">
+    Upload Profile Picture
+  </label>
+</div>
+
 
   {/* Submit Button */}
   <button

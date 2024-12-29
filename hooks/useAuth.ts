@@ -1,15 +1,17 @@
 'use client';
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../lib/firebase.config"; // Use the shared `auth` instance
 import {
+  GoogleAuthProvider,
+  signInWithPopup,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
   User,
 } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 
 // Define the interface for the authentication functions and state
@@ -19,6 +21,7 @@ interface UseAuth {
   signUp: (email: string, password: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  uploadAndSaveProfilePicture: (userId: string, file: File) => Promise<string>;
   handleFirebaseError: (error: any) => never;
 }
 
@@ -100,8 +103,6 @@ async function signInWithGoogle() {
   };
 
 
-
-
   // Logout function
   const logout = async (): Promise<void> => {
     try {
@@ -119,6 +120,7 @@ async function signInWithGoogle() {
     signUp,
     login,
     logout,
+    uploadAndSaveProfilePicture,
     handleFirebaseError
   };
 };

@@ -17,7 +17,7 @@ function SignupContent() {
   const email = searchParams.get('email') || '';
   const password = searchParams.get('password') || '';
 
-  console.log(email, password);
+  // console.log(email, password);
 
   return (
     <div>

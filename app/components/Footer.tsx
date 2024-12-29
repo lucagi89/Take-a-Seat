@@ -2,12 +2,14 @@
 
 import React, { useState } from 'react';
 import styles from '../ui/footer.module.css';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
+import { useAuthentication } from '../../contexts/AuthContext';
 import Link from 'next/link';
 
 export default function Footer() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { logout, userData, error } = useAuth();
+  const { userData, error } = useAuthentication();
+  const { logout } = useAuth();
 
   // Toggle menu functions
   const toggleMenu = (): void => setIsMenuOpen(!isMenuOpen);

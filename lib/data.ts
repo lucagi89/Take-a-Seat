@@ -74,9 +74,10 @@ export async function getUserData(email: string) {
 
   const querySnapshot = await getDocs(q);
   if (querySnapshot.empty) {
-      return null; // Return null if no user is found
+      return email; // Return null if no user is found
   }
 
   const userData = querySnapshot.docs[0].data(); // Assuming only one user per email
+  console.log(userData);
   return userData;
 }

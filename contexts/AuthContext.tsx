@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from '../lib/firebase.config';
+import { getUserData } from '../lib/data'
 
 interface UserData {
   firstName: string;
@@ -27,6 +28,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(auth.currentUser);
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -45,19 +47,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const fetchUserData = async (email: string) => {
       try {
-        const response = await fetch(`/api/users?email=${encodeURIComponent(email)}`, {
-          method: 'GET',
-        });
-
-        if (!response.ok) {
-          console.error('Error fetching user data:', await response.json());
-          return null;
-        }
-
-        const userData = await response.json();
-        console.log('User data:', userData);
-        return userData;
+        return await getUserData(email);
       } catch (error) {
+        setError(error.message);
         console.error("Error fetching user data:", error);
         return null;
       }
@@ -80,7 +72,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   );
 };
 
-export const useAuth = () => {
+export const useAuthentication = () => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
