@@ -41,7 +41,7 @@ export default function Footer() {
                 <>Hello, Guest!</>
               )}
             </li>
-            {error && <li className={styles.error}>Error: {error}</li>}
+            {/* {error && <li className={styles.error}>Error: {error}</li>} */}
             <li>
               <Link href="/profile">Profile</Link>
             </li>
