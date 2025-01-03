@@ -42,4 +42,6 @@ next-env.d.ts
 google-cloud-sdk/
 *.tar.gz
 
+# Ignore Firebase credentials
 config/*.json
+config/*.js
