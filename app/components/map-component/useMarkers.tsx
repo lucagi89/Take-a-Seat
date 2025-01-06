@@ -39,7 +39,8 @@ export default function useMarkers(map: mapboxgl.Map | null) {
 
     document.querySelectorAll('.restaurant-marker').forEach((marker) => marker.remove());
 
-    restaurants.forEach((restaurant) => {
+    if (restaurants){
+      restaurants.forEach((restaurant) => {
       const { longitude, latitude, name, is_available } = restaurant;
 
       const popupElement = document.createElement('div');
@@ -52,5 +53,8 @@ export default function useMarkers(map: mapboxgl.Map | null) {
         .setPopup(new mapboxgl.Popup().setDOMContent(popupElement))
         .addTo(map);
     });
+    }
+
+
   }, [restaurants, map]);
 }

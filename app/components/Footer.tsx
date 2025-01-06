@@ -36,7 +36,7 @@ export default function Footer() {
           <ul>
             <li>
               {userData ? (
-                <>Hello, {userData.firstName || userData.email || 'Guest'}!</>
+                <>Hello, {userData.firstName || userData.email }!</>
               ) : (
                 <>Hello, Guest!</>
               )}

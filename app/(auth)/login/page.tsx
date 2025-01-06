@@ -54,7 +54,7 @@ export default function LoginForm() {
       await login(email, password);
       console.log("Login successful, redirecting...");
     } else if (action === "signup") {
-      router.push(`/signup?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`);
+      router.push(`/confirm-details?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`);
       console.log("Signing up...");
     }
     } catch (error: unknown) {

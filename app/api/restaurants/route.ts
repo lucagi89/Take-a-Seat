@@ -33,6 +33,8 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid latitude or longitude values' }, { status: 400 });
     }
 
+
+
     // Query Firestore
     const geoQuery = query(
       restaurantsRef,
@@ -42,6 +44,7 @@ export async function GET(req: NextRequest) {
       where('longitude', '<=', neLng)
     );
     const snapshot = await getDocs(geoQuery);
+
 
     // Map results
     const restaurants = snapshot.docs.map((doc) => ({

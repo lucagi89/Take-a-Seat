@@ -3,12 +3,14 @@ import React, { useEffect, useState } from 'react';
 
 // import { useAuth } from '../../hooks/useAuth';
 import { auth } from '../../lib/firebase.config';
-import { useContext } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+// import { useContext } from 'react';
+import { useAuth } from '../../hooks/useAuth';
+import { useAuthentication } from '../../contexts/AuthContext';
 
 
 export default function ProfilePage() {
-  const { user, loading, userData } = useAuth();
+  const { user, loading } = useAuth();
+  const { userData } = useAuthentication();
   const email = user?.email;
   interface UserData {
     firstName: string;

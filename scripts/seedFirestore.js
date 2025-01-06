@@ -1,22 +1,28 @@
-'use strict';
+import admin from 'firebase-admin';
 import dotenv from 'dotenv';
 dotenv.config();
 
-import admin from 'firebase-admin';
-import serviceAccount from '../config/take-a-seat-56e45-firebase-adminsdk-53osj-f12752dc50.json' assert { type: 'json' };
+import serviceAccount from '../take-a-seat-56e45-434cd4e4d682.json' assert { type: 'json' };
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
 
-export const db = admin.firestore();
+delete process.env.FIRESTORE_EMULATOR_HOST;
 
-// import { db } from '../lib/firebase.config.js';
-// import { collection, addDoc, getDocs, writeBatch } from 'firebase/firestore';
+if (!admin.apps.length) {
+  try {
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+    });
+    console.log('Firebase Admin initialized successfully.');
+  } catch (error) {
+    console.error('Firebase Admin initialization error:', error);
+    process.exit(1);
+  }
+}
+
+const db = admin.firestore();
+export { db };
+
 import { fakeRestaurants } from './fakeRestaurants.js';
-
-
-deleteAllData('users');
 
 async function deleteAllData(collectionName) {
   try {
@@ -50,10 +56,13 @@ async function seedRestaurants() {
   try {
     await deleteAllData('restaurants');
 
-    for (const restaurant of fakeRestaurants) {
-      await restaurantsCollection.add(restaurant);
-    }
+    const batch = db.batch();
+    fakeRestaurants.forEach((restaurant) => {
+      const docRef = restaurantsCollection.doc();
+      batch.set(docRef, restaurant);
+    });
 
+    await batch.commit();
     console.log('Restaurants added successfully!');
   } catch (error) {
     console.error('Error during seeding:', error);
@@ -64,9 +73,10 @@ async function seedRestaurants() {
 seedRestaurants()
   .then(() => {
     console.log('Restaurants Seeding Completed');
-    process.exit(0); // Exit the script after completion
   })
   .catch((error) => {
     console.error('Restaurants Seeding Failed:', error);
-    process.exit(1);
+  })
+  .finally(() => {
+    process.exit(0);
   });
