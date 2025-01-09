@@ -45,3 +45,5 @@ google-cloud-sdk/
 # Ignore Firebase credentials
 config/*.json
 config/*.js
+
+take-a-seat-56e45-434cd4e4d682.json
