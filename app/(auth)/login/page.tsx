@@ -1,13 +1,13 @@
 'use client';
 import styles from "../../ui/loginform.module.css";
-// import googleSignIn from "../../../hooks/googleAuth";
 import { useState } from "react";
 import { useAuth } from "../../../hooks/useAuth";
 import { useRouter } from "next/navigation";
-// import { FirebaseError } from "firebase/app"; // Import FirebaseError type
+import { collection, getDoc, query, where, doc } from "firebase/firestore";
+import { db, usersRef } from "../../../lib/firebase.config";
 
 export default function LoginForm() {
-  const { login } = useAuth();
+  const { login, signInWithGoogle, user } = useAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loginError, setLoginError] = useState<string | null>(null);
@@ -24,7 +24,19 @@ export default function LoginForm() {
     setLoginError(null);
     setIsLoading(true);
 
+    if (action === "google") {
+      handleGoogleLogin();
+    } else {
+      if (action) {
+        handleEmailAndPasswordLogin(action);
+      } else {
+        setLoginError("An unexpected error occurred. Please try again.");
+        setIsLoading(false);
+      }
+    }
+}
 
+const handleEmailAndPasswordLogin = async (action: string) => {
   // Email validation
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -58,14 +70,65 @@ export default function LoginForm() {
       console.log("Signing up...");
     }
     } catch (error: unknown) {
-      setLoginError(error.message)
+      if (error instanceof Error) {
+        setLoginError(error.message);
+      } else {
+        setLoginError("An unknown error occurred.");
+      }
       setIsLoading(false);
     }
 
   }
+  }
+
+  const handleGoogleLogin = async () => {
+      try {
+        const userCredential = await signInWithGoogle(); // This should return user info
+        const userId = userCredential.uid;
+      // console.log("User info:", credential.uid);
+
+      if (!userId) {
+        throw new Error("Unable to retrieve user information.");
+      }
+
+      const isAlreadyUser = await checkUserExists(userId);
+      if(isAlreadyUser) {
+        router.push('/');
+      } else{
+        router.push(`/complete-profile?uid=${userId}`);
+      }
+
+      console.log("Google login successful, redirecting...");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setLoginError(error.message);
+      } else {
+        setLoginError("An unknown error occurred.");
+      }
+      setIsLoading(false);
+    }
+  };
 
 
-}
+  interface UserCredential {
+    user: {
+      uid: string;
+    };
+  }
+
+  const checkUserExists = async (userId: string): Promise<boolean> => {
+    try {
+      const userRef = doc(usersRef, userId);
+      const userDoc = await getDoc(userRef);
+      return userDoc.exists();
+    } catch (error) {
+      console.error("Error checking user existence:", error);
+      throw error;
+    }
+  };
+
+
+
 
   return (
     <div>
@@ -140,6 +203,14 @@ export default function LoginForm() {
         </div>
       </form>
 
+      <button
+          type="button"
+          value="google"
+          className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+          onClick={handleGoogleLogin}
+          >
+          Sign in with Google
+          </button>
       {/* Error Message */}
       {loginError && <p style={{ color: "red" }}>{loginError}</p>}
     </div>

@@ -21,7 +21,7 @@ function SignupContent() {
 
   return (
     <div>
-      <ProfileForm email={email} password={password} />
+      <ProfileForm />
     </div>
   );
 }

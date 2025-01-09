@@ -3,10 +3,8 @@ import { useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { useMapContext } from './mapContext';
 import { handleUserLocation } from './marker-utils';
-import { getAuth } from "firebase/auth";
+import { auth } from "../../../lib/firebase.config"
 
-const auth = getAuth();
-console.log("Current user:", auth.currentUser?.uid);
 
 
 export default function useMap(

@@ -43,7 +43,6 @@ function SignupContent() {
     }
   };
 
-  // console.log(email, password);
 
   return (
     <form
